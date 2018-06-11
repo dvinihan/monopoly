@@ -2,28 +2,49 @@
 <html>
 
 <head>
-  <% include ../partials/header.ejs %>
+    <% include ../partials/header.ejs %>
 </head>
 
 <body>
 
-  <div class="jumbotron text-center">
-    <div class="container">
-      <h1>ROOM MONOPOLY</h1>
-      <p>This is the central administration page.</p>
-      <p>
-        <a href='/db'>Click here to see the rooms.</a>
-      </p>
+    <% include ../partials/top.ejs %>
 
-    </div>
-  </div>
-  <div class="container">
-    <div class="alert alert-info text-center" role="alert">
-      Monopoly!
-    </div>
-    <hr>
-  </div>
+        <div class="alert alert-info text-center" role="alert">
+            Monopoly!
+        </div>
 
+        <div class="container">
+            <h2>Rooms</h2>
+
+            <ul>
+                <% rooms.forEach(function(r) { %>
+                    <h3>
+                        <%= r.roomName %>
+                    </h3>
+                    <div>
+                        Current record:
+                        <%= r.time %>
+                            <br /> Held by:
+                            <%= r.name %>
+                    </div>
+                    <% }); %>
+            </ul>
+
+            <h2>Teams</h2>
+
+            <ul>
+                <% teams.forEach(function(r) { %>
+                    <h3>
+                        <%= r.name %>
+                    </h3>
+                    <div>
+                        Current records held:
+                        <%= r.records %>
+                    </div>
+                    <% }); %>
+            </ul>
+
+        </div>
 
 </body>
 
