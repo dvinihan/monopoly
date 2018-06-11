@@ -6,22 +6,35 @@
 </head>
 
 <body>
-
-    <% include ../partials/nav.ejs %>
-
+    <div class="jumbotron text-center">
         <div class="container">
-            <h2>Database Results</h2>
-
-            <ul>
-                <% results.forEach(function(r) { %>
-                    <li>
-                        <%= r.time %> -
-                            <%= r.name %>
-                    </li>
-                    <% }); %>
-            </ul>
+            <h1>ROOM MONOPOLY</h1>
+            <p>This is the database page.</p>
+            <p>
+                <a href='/'>Click here to go home.</a>
+            </p>
 
         </div>
+    </div>
+
+    <div class="container">
+        <h2>Rooms</h2>
+
+        <ul>
+            <% results.forEach(function(r) { %>
+                <h3>
+                    <%= r.roomName %>
+                </h3>
+                <div>
+                    Current record:
+                    <%= r.time %>
+                        <br /> Held by:
+                        <%= r.name %>
+                </div>
+                <% }); %>
+        </ul>
+
+    </div>
 
 </body>
 
