@@ -38,6 +38,12 @@ con.connect(err => {
         });
       });
     })
+    .get('/signup', (req, res) => {
+      res.render('pages/signup', {});
+    })
+    .get('/admin', (req, res) => {
+      res.render('pages/admin', {});
+    })
     .listen(PORT, () => console.log(`Listening on ${PORT}`))
 
 })
