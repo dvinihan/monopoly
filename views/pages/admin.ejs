@@ -11,6 +11,43 @@
 
     <div>Admin Page</div>
 
+    <div class="container">
+      <h2>Rooms</h2>
+
+      <ul>
+        <% rooms.forEach(function(r) { %>
+          <h3>
+            <%= r.roomName %>
+          </h3>
+          <div>Current record:
+            <%= r.time %>
+              <br /> Held by:
+              <%= r.name %>
+                <br />ID:
+                <%= r.id %>
+          </div>
+          <% }); %>
+      </ul>
+
+      <h2>Teams</h2>
+
+      <ul>
+        <% teams.forEach(function(r) { %>
+          <h3>
+            <%= r.name %>
+          </h3>
+          <div>
+            Current records held:
+            <%= r.records %>
+              <br />ID:
+              <%= r.id %>
+          </div>
+          <% }); %>
+      </ul>
+
+    </div>
+
+
 </body>
 
 </html>

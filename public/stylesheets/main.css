@@ -1,35 +1,53 @@
 .jumbotron {
   background: rgb(158, 153, 230);
   color: white;
-  padding-bottom: 80px; }
-  .jumbotron .btn-primary {
-    background: #ac93d4;
-    border-color: #845ac7; }
-    .jumbotron .btn-primary:hover {
-      background: #7646c1; }
-  .jumbotron p {
-    color: #d9ccee;
-    max-width: 75%;
-    margin: 1em auto 2em; }
-  .navbar + .jumbotron {
-    margin-top: -20px; }
-  .jumbotron .lang-logo {
-    display: block;
-    background: #B01302;
-    border-radius: 50%;
-    overflow: hidden;
-    width: 100px;
-    height: 100px;
-    margin: auto;
-    border: 2px solid white; }
-    .jumbotron .lang-logo img {
-      max-width: 100%; }
-    .team-signup-button {
-      float: left;
-      margin-left: 100px;
-    }
-    .admin-login-button {
-      float: right;
-      margin-right: 100px;
-    }
+  padding-bottom: 80px; 
+}
+
+.jumbotron .btn-primary {
+  background: #ac93d4;
+  border-color: #845ac7; 
+}
+
+.jumbotron .btn-primary:hover {
+  background: #7646c1; 
+}
+  
+.jumbotron p {
+  color: #d9ccee;
+  max-width: 75%;
+  margin: 1em auto 2em; 
+}
+
+.navbar + .jumbotron {
+  margin-top: -20px; 
+}
+
+.jumbotron .lang-logo {
+  display: block;
+  background: #B01302;
+  border-radius: 50%;
+  overflow: hidden;
+  width: 100px;
+  height: 100px;
+  margin: auto;
+  border: 2px solid white; 
+}
+
+.jumbotron .lang-logo img {
+  max-width: 100%; 
+}
+
+.team-signup-button {
+  float: left;
+  margin-left: 100px;
+  color:white;
+}
+
+.admin-login-button {
+  float: right;
+  margin-right: 100px;
+  color:white;
+
+}
 

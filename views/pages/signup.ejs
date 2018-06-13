@@ -3,14 +3,58 @@
 
 <head>
   <% include ../partials/header.ejs %>
+
+    <style>
+      .body {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .signup-header {
+        font-size: 25px;
+      }
+
+      .team-input {
+        margin-top: 30px;
+      }
+    </style>
 </head>
 
 <body>
 
   <% include ../partials/top.ejs %>
 
-  <div>Team Signup Page</div>
+    <div class="body">
 
+      <div class="signup-header">Team Signup</div>
+
+      <div class="team-input">
+
+        <div>Team Name:</div>
+
+        <input id="team-name-input" type='text' />
+        <br />
+        <button id="team-submit-button">Submit</button>
+
+
+      </div>
+
+
+    </div>
+
+    <script>
+      document.getElementById("team-submit-button").onclick = () => {
+        let teamName = document.getElementById('team-name-input').value;
+
+        window.location.href = '/team-submit?teamName=' + teamName;
+
+
+        //add to SQL database
+
+      };
+
+    </script>
 </body>
 
 </html>

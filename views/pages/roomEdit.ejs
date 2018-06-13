@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ../partials/header.ejs %>
+</head>
+
+<body>
+
+  <% include ../partials/top.ejs %>
+
+    <div>
+      <h3>
+        <%= room.roomName %>
+      </h3>
+      <div>
+        Current record:
+        <%= room.time %>
+          <br />Held by:
+          <%= room.name %>
+            <br />ID:
+            <%= room.id %>
+      </div>
+    </div>
+
+</body>
+
+</html>

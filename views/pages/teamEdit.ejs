@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ../partials/header.ejs %>
+</head>
+
+<body>
+
+  <% include ../partials/top.ejs %>
+
+    <div>
+      <h3>
+        <%= team.name %>
+      </h3>
+      <div>
+        Current records held:
+        <%= team.records %>
+          <br />ID:
+          <%= team.id %>
+      </div>
+    </div>
+
+</body>
+
+</html>
