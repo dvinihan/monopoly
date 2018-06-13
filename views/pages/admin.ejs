@@ -14,11 +14,12 @@
     <div class="container">
       <h2>Rooms</h2>
 
-      <ul>
+      <div>
         <% rooms.forEach(function(r) { %>
           <h3>
             <%= r.roomName %>
           </h3>
+
           <div>Current record:
             <%= r.time %>
               <br /> Held by:
@@ -26,27 +27,37 @@
                 <br />ID:
                 <%= r.id %>
           </div>
+
+          <div class="edit-link">
+            <a id="edit" href="/roomEdit?id=<%- r.id %>">Edit</a>
+          </div>
+
           <% }); %>
-      </ul>
+      </div>
 
       <h2>Teams</h2>
 
-      <ul>
+      <div>
         <% teams.forEach(function(r) { %>
           <h3>
             <%= r.name %>
           </h3>
+
           <div>
             Current records held:
             <%= r.records %>
               <br />ID:
               <%= r.id %>
           </div>
+
+          <div class="edit-link">
+            <a id="edit" href="/teamEdit?id=<%- r.id %>">Edit</a>
+          </div>
+
           <% }); %>
-      </ul>
+      </div>
 
     </div>
-
 
 </body>
 

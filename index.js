@@ -44,10 +44,6 @@ con.connect(err => {
     });
   });
 
-  app.get('/signup', (req, res) => {
-    res.render('pages/signup', {});
-  });
-
   app.get('/admin', (req, res) => {
     con.query("SELECT * FROM rooms", (err, result) => {
       if (err) throw err;
@@ -60,15 +56,41 @@ con.connect(err => {
         res.render('pages/admin', { rooms: rooms, teams: teams });
       });
     });
+  });
 
+  app.get('/signup', (req, res) => {
+    res.render('pages/signup', {});
   });
 
   app.get('/team-submit', (req, res) => {
-    //add to sql db
-    con.query("INSERT INTO teams (name) VALUES ('" + req.query.teamName + "')", (err, result) => {
+    //check if the name is already taken
+    con.query("SELECT * FROM teams", (err, result) => {
       if (err) throw err;
-      //render signup landing page
-      res.render('pages/teamSubmit', { teamName: req.query.teamName });
+      var teams = result;
+
+      console.log(teams);
+      console.log(req.query.teamName);
+
+      let exists = false;
+      for (let i = 0; i < teams.length; i++) {
+        if (teams[i].name === req.query.teamName) {
+          console.log('already taken');
+          res.render('pages/signupError');
+          break;
+          exists = true;
+        }
+      };
+
+      if (!exists) {
+        console.log('not taken');
+
+        //add to sql db
+        con.query("INSERT INTO teams (name) VALUES ('" + req.query.teamName + "')", (err, result) => {
+          if (err) throw err;
+          //render signup landing page
+          res.render('pages/teamSubmit', { teamName: req.query.teamName });
+        });
+      }
     });
   });
 

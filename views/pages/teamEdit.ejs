@@ -9,18 +9,24 @@
 
   <% include ../partials/top.ejs %>
 
-    <div>
+    <div class="team-edit">
       <h3>
-        <%= team.name %>
+        Name:
       </h3>
+      <input id='team-name-input' value='<%- team.name %>' />
+
+
       <div>
-        Current records held:
+        <br /> Current records held:
         <%= team.records %>
           <br />ID:
           <%= team.id %>
       </div>
+
+      <button id="team-save">Save</button>
     </div>
 
+    <% include ../partials/footer.ejs %>
 </body>
 
 </html>

@@ -48,6 +48,10 @@
   float: right;
   margin-right: 100px;
   color:white;
+}
+
+.team-edit, .room-edit {
+  margin: 30px;
 
 }
 
