@@ -15,12 +15,15 @@
       </h3>
       <input id='team-name-input' value='<%- team.name %>' />
 
-
       <div>
         <br /> Current records held:
         <%= team.records %>
-          <br />ID:
+      </div>
+      <div>
+        <br />ID:
+        <span id='team-id'>
           <%= team.id %>
+        </span>
       </div>
 
       <button id="team-save">Save</button>

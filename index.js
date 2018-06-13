@@ -28,35 +28,37 @@ con.connect(err => {
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
 
+  async function getAllData() {
+    let rooms = await con.query("SELECT * FROM rooms", (err, result) => {
+      if (err) throw err;
+      console.log('sql room results:')
+      console.log(result);
+      return result;
+    });
+
+    let teams = await con.query("SELECT * FROM teams", (err, result) => {
+      if (err) throw err;
+      return result;
+    });
+
+    return { rooms: rooms, teams: teams };
+  }
+
+
   app.get('/', (req, res) => {
-
-    con.query("SELECT * FROM rooms", (err, result) => {
-      if (err) throw err;
-      var rooms = result;
-
-      con.query("SELECT * FROM teams", (err, result) => {
-        if (err) throw err;
-        var teams = result;
-
-        res.render('pages/index', { rooms: rooms, teams: teams });
-
-      });
+    getAllData().then(results => {
+      console.log(results);
+      res.render('pages/index', { rooms: results.rooms, teams: results.teams });
     });
+
   });
 
-  app.get('/admin', (req, res) => {
-    con.query("SELECT * FROM rooms", (err, result) => {
-      if (err) throw err;
-      var rooms = result;
 
-      con.query("SELECT * FROM teams", (err, result) => {
-        if (err) throw err;
-        var teams = result;
-
-        res.render('pages/admin', { rooms: rooms, teams: teams });
-      });
+  /*
+    app.get('/admin', (req, res) => {
+      res.render('pages/admin', { rooms: req.params.rooms, teams: req.params.teams });
     });
-  });
+  */
 
   app.get('/signup', (req, res) => {
     res.render('pages/signup', {});
@@ -68,22 +70,16 @@ con.connect(err => {
       if (err) throw err;
       var teams = result;
 
-      console.log(teams);
-      console.log(req.query.teamName);
-
       let exists = false;
       for (let i = 0; i < teams.length; i++) {
         if (teams[i].name === req.query.teamName) {
-          console.log('already taken');
-          res.render('pages/signupError');
-          break;
           exists = true;
         }
       };
 
-      if (!exists) {
-        console.log('not taken');
-
+      if (exists) {
+        res.render('pages/signupError');
+      } else {
         //add to sql db
         con.query("INSERT INTO teams (name) VALUES ('" + req.query.teamName + "')", (err, result) => {
           if (err) throw err;
@@ -111,7 +107,13 @@ con.connect(err => {
 
       res.render('pages/roomEdit', { room: room });
     });
+  });
 
+  app.get('/teamUpdate', (req, res) => {
+    con.query("UPDATE teams SET name = '" + req.query.teamName + "' WHERE id=" + req.query.id, (err, result) => {
+      if (err) throw err;
+      res.render('pages/admin', { rooms: req.params.rooms, teams: req.params.teams });
+    });
   });
 
 
