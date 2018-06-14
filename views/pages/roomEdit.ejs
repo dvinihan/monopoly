@@ -20,20 +20,21 @@
         <input id="edit-room-time" value='<%- room.time %>' />
         <br />Held by:
 
-
         <select id="edit-room-team">
-          <option value="<%- room.name %>">
-            <%= room.name %>
+          <option value="<%- teams.find(team => team.id === room.team).name %>">
+            <% var ttt = teams.find(team => team.id === room.team).name %>
+              <%= ttt %>
           </option>
           <% teams.forEach(function(t) { %>
-            <option value="<%- t.name %>">
-              <%= t.name %>
-            </option>
-            <% }); %>
+            <% if (ttt !== t.name) {%>
+              <option value="<%- t.name %>">
+                <%= t.name %>
+              </option>
+              <% }}); %>
         </select>
 
         <br /> ID:
-        <div id="room-id">
+        <div style="display:inline;" id="room-id">
           <%= room.id %>
         </div>
       </div>

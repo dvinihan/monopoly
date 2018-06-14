@@ -30,7 +30,6 @@ if (document.getElementById('add-room')) {
 
 //////////////////    WORKING
 if (document.getElementById('room-save')) {
-  console.log('ppp');
   document.getElementById('room-save').onclick = () => {
     let roomName = document.getElementById('edit-room-name').value;
     let time = document.getElementById('edit-room-time').value;
