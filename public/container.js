@@ -1,5 +1,5 @@
 if (document.getElementById('team-submit-button')) {
-  document.getElementById("team-submit-button").onclick = () => {
+  document.getElementById('team-submit-button').onclick = () => {
     let teamName = document.getElementById('team-name-input').value;
 
     window.location.href = '/team-submit?teamName=' + teamName;
@@ -17,13 +17,11 @@ if (document.getElementById('team-save')) {
 
 if (document.getElementById('add-room')) {
   document.getElementById('add-room').onclick = () => {
-    let roomName = document.getElementById("new-room-name").value;
+    let roomName = document.getElementById('new-room-name').value;
+    let record = document.getElementById('new-room-record').value;
+    let recordHolder = document.getElementById('new-room-record-team').value;
 
-    let record = document.getElementById("new-room-record").value;
-
-    let recordHolder = document.getElementById("new-room-record-team").value;
-
-    window.location.href = `/roomInsert?roomName=${roomName}&time=${record}&name=${recordHolder}`;
+    window.location.href = `/roomInsert?roomName=${roomName}&time=${record}&team=${recordHolder}`;
   };
 }
 
@@ -39,7 +37,7 @@ if (document.getElementById('room-save')) {
 }
 
 if (document.getElementById('room-delete-button')) {
-  document.getElementById("room-delete-button").onclick = () => {
+  document.getElementById('room-delete-button').onclick = () => {
     let roomID = document.getElementById('select-delete-room').value;
 
     window.location.href = '/deleteRoomAction?id=' + roomID;
@@ -47,9 +45,11 @@ if (document.getElementById('room-delete-button')) {
 }
 
 if (document.getElementById('team-delete-button')) {
-  document.getElementById("team-delete-button").onclick = () => {
+  document.getElementById('team-delete-button').onclick = () => {
     let teamID = document.getElementById('select-delete-team').value;
 
     window.location.href = '/deleteTeamAction?id=' + teamID;
   };
 }
+
+

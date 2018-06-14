@@ -11,7 +11,7 @@
 
     <div class="room-add">
       <h3>
-        Room Name:
+        Room Name: (cannot include single or double quotes)
       </h3>
       <input id="new-room-name" />
 
@@ -22,7 +22,7 @@
         <select id="new-room-record-team">
           <option value="">Pick a team</option>
           <% teams.forEach(function(t) { %>
-            <option value="<%- t.name %>">
+            <option value="<%- t.id %>">
               <%= t.name %>
             </option>
             <% }); %>
