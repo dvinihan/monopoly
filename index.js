@@ -28,7 +28,6 @@ con.connect(err => {
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
 
-
   function getData(callback) {
     con.query("SELECT * FROM rooms", (err, result) => {
       if (err) throw err;
@@ -40,6 +39,17 @@ con.connect(err => {
 
         callback(rooms, teams);
 
+      });
+    });
+  }
+
+  //directionInt should be positive to increase the team's current record, negative to decrease it
+  function teamRecordCountEdit(directionInt, teamID, callback) {
+    getData(function (rooms, teams) {
+      let team = teams.find(team => team.id === teamID);
+      con.query(`UPDATE teams SET records = '${directionInt > 0 ? team.records + 1 : team.records - 1}' WHERE id = '${teamID}'`, (err, result) => {
+        if (err) throw err;
+        callback();
       });
     });
   }
@@ -110,6 +120,28 @@ con.connect(err => {
     });
   });
 
+  app.get('/roomUpdate', (req, res) => {
+    getData(function (rooms, teams) {
+      let oldTeamID = rooms.find(room => room.id == req.query.id).team;
+      let newTeamID = teams.find(team => team.name === req.query.teamName).id;
+
+      con.query(`UPDATE rooms SET roomName = '${req.query.roomName}', time = '${req.query.time}', team = '${newTeamID}' WHERE id = '${req.query.id}'`, (err, result) => {
+        if (err) throw err;
+
+
+        //if record holder changed, alter the 2 teams' record amounts
+        if (oldTeamID !== newTeamID) {
+          teamRecordCountEdit(1, newTeamID, () => {
+            teamRecordCountEdit(-1, oldTeamID, () => {
+              res.redirect('/admin');
+            });
+          });
+        }
+
+      });
+    });
+  });
+
   app.get('/teamUpdate', (req, res) => {
     con.query("UPDATE teams SET name = '" + req.query.teamName + "' WHERE id=" + req.query.id, (err, result) => {
       if (err) throw err;
@@ -149,16 +181,6 @@ con.connect(err => {
     });
   });
 
-  app.get('/roomUpdate', (req, res) => {
-    getData(function (rooms, teams) {
-      let teamID = teams.find(team => team.name === req.query.teamName).id;
-
-      con.query(`UPDATE rooms SET roomName = '${req.query.roomName}', time = '${req.query.time}', team = '${teamID}' WHERE id = '${req.query.id}'`, (err, result) => {
-        if (err) throw err;
-        res.redirect('/admin');
-      });
-    });
-  });
 
   app.get('/deleteRoomPage', (req, res) => {
     getData(function (rooms, teams) {
