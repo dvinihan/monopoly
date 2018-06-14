@@ -6,7 +6,6 @@ if (document.getElementById('team-submit-button')) {
   };
 }
 
-
 if (document.getElementById('team-save')) {
   document.getElementById('team-save').onclick = () => {
     let teamName = document.getElementById('team-name-input').value;
@@ -28,7 +27,6 @@ if (document.getElementById('add-room')) {
   };
 }
 
-//////////////////    WORKING
 if (document.getElementById('room-save')) {
   document.getElementById('room-save').onclick = () => {
     let roomName = document.getElementById('edit-room-name').value;
@@ -40,3 +38,18 @@ if (document.getElementById('room-save')) {
   };
 }
 
+if (document.getElementById('room-delete-button')) {
+  document.getElementById("room-delete-button").onclick = () => {
+    let roomID = document.getElementById('select-delete-room').value;
+
+    window.location.href = '/deleteRoomAction?id=' + roomID;
+  };
+}
+
+if (document.getElementById('team-delete-button')) {
+  document.getElementById("team-delete-button").onclick = () => {
+    let teamID = document.getElementById('select-delete-team').value;
+
+    window.location.href = '/deleteTeamAction?id=' + teamID;
+  };
+}

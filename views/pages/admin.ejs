@@ -18,6 +18,12 @@
         </a>
       </h4>
 
+      <h4>
+        <a href="/deleteRoomPage">
+          <u>Delete a room</u>
+        </a>
+      </h4>
+
       <div>
         <% rooms.forEach(function(r) { %>
           <h3>
@@ -27,7 +33,7 @@
           <div>Current record:
             <%= r.time %>
               <br /> Held by:
-							<%= teams.find(team => team.id === r.team).name %>
+              <%= teams.find(team => team.id === r.team).name %>
                 <br />ID:
                 <%= r.id %>
           </div>
@@ -42,6 +48,12 @@
       <hr style="border-top: 3px solid black">
 
       <h2>Teams</h2>
+
+      <h4>
+        <a href="/deleteTeamPage">
+          <u>Delete a team</u>
+        </a>
+      </h4>
 
       <div>
         <% teams.forEach(function(r) { %>

@@ -153,14 +153,41 @@ con.connect(err => {
     getData(function (rooms, teams) {
       let teamID = teams.find(team => team.name === req.query.teamName).id;
 
-      let query = `UPDATE rooms SET roomName = '${req.query.roomName}', time = '${req.query.time}', team = '${teamID}' WHERE id = '${req.query.id}'`;
-
-      con.query(query, (err, result) => {
+      con.query(`UPDATE rooms SET roomName = '${req.query.roomName}', time = '${req.query.time}', team = '${teamID}' WHERE id = '${req.query.id}'`, (err, result) => {
         if (err) throw err;
         res.redirect('/admin');
       });
     });
+  });
 
+  app.get('/deleteRoomPage', (req, res) => {
+    getData(function (rooms, teams) {
+      res.render('pages/deleteRoom', { rooms: rooms, teams: teams });
+    });
+  });
+
+  app.get('/deleteRoomAction', (req, res) => {
+    getData(function (rooms, teams) {
+      con.query(`DELETE FROM rooms WHERE id = '${req.query.id}'`, (err, result) => {
+        if (err) throw err;
+        res.redirect('/admin');
+      });
+    });
+  });
+
+  app.get('/deleteTeamPage', (req, res) => {
+    getData(function (rooms, teams) {
+      res.render('pages/deleteTeam', { rooms: rooms, teams: teams });
+    });
+  });
+
+  app.get('/deleteTeamAction', (req, res) => {
+    getData(function (rooms, teams) {
+      con.query(`DELETE FROM teams WHERE id = '${req.query.id}'`, (err, result) => {
+        if (err) throw err;
+        res.redirect('/admin');
+      });
+    });
   });
 
   app.listen(PORT, () => console.log(`Listening on ${PORT}`));
