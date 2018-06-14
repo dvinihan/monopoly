@@ -12,6 +12,12 @@
     <div class="container">
       <h2>Rooms</h2>
 
+      <h4>
+        <a href="/addRoom">
+          <u>Add a room</u>
+        </a>
+      </h4>
+
       <div>
         <% rooms.forEach(function(r) { %>
           <h3>
@@ -32,6 +38,8 @@
 
           <% }); %>
       </div>
+
+      <hr style="border-top: 3px solid black">
 
       <h2>Teams</h2>
 
@@ -56,6 +64,8 @@
       </div>
 
     </div>
+
+    <% include ../partials/footer.ejs %>
 
 </body>
 

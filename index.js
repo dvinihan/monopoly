@@ -28,37 +28,36 @@ con.connect(err => {
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
 
-  async function getAllData() {
-    let rooms = await con.query("SELECT * FROM rooms", (err, result) => {
-      if (err) throw err;
-      console.log('sql room results:')
-      console.log(result);
-      return result;
-    });
 
-    let teams = await con.query("SELECT * FROM teams", (err, result) => {
+  function getData(callback) {
+    con.query("SELECT * FROM rooms", (err, result) => {
       if (err) throw err;
-      return result;
-    });
+      let rooms = result;
 
-    return { rooms: rooms, teams: teams };
+      con.query("SELECT * FROM teams", (err, result) => {
+        if (err) throw err;
+        let teams = result;
+
+        callback(rooms, teams);
+
+      });
+    });
   }
 
 
   app.get('/', (req, res) => {
-    getAllData().then(results => {
-      console.log(results);
-      res.render('pages/index', { rooms: results.rooms, teams: results.teams });
+    getData(function (rooms, teams) {
+      res.render('pages/index', { rooms: rooms, teams: teams });
     });
-
   });
 
 
-  /*
-    app.get('/admin', (req, res) => {
-      res.render('pages/admin', { rooms: req.params.rooms, teams: req.params.teams });
+  app.get('/admin', (req, res) => {
+    getData(function (rooms, teams) {
+      res.render('pages/admin', { rooms: rooms, teams: teams });
     });
-  */
+  });
+
 
   app.get('/signup', (req, res) => {
     res.render('pages/signup', {});
@@ -112,7 +111,39 @@ con.connect(err => {
   app.get('/teamUpdate', (req, res) => {
     con.query("UPDATE teams SET name = '" + req.query.teamName + "' WHERE id=" + req.query.id, (err, result) => {
       if (err) throw err;
-      res.render('pages/admin', { rooms: req.params.rooms, teams: req.params.teams });
+      res.redirect('/admin');
+    });
+  });
+
+  app.get('/addRoom', (req, res) => {
+    getData(function (rooms, teams) {
+      console.log(teams);
+      res.render('pages/addRoom', { teams: teams });
+    });
+  });
+
+  app.get('/roomInsert', (req, res) => {
+    con.query("SELECT * FROM rooms", (err, result) => {
+      if (err) throw err;
+      var rooms = result;
+
+      let exists = false;
+      for (let i = 0; i < rooms.length; i++) {
+        if (rooms[i].roomName === req.query.roomName) {
+          exists = true;
+        }
+      };
+
+      if (exists) {
+        res.render('pages/roomAddError');
+      } else {
+        //add to sql db
+        con.query(`INSERT INTO rooms (roomName, time, name) VALUES ('${req.query.roomName}', '${req.query.time}', '${req.query.name}')`, (err, result) => {
+          if (err) throw err;
+          //render signup landing page
+          res.redirect('/admin');
+        });
+      }
     });
   });
 

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ../partials/header.ejs %>
+</head>
+
+<body>
+
+  <% include ../partials/top.ejs %>
+
+    <div class="room-add">
+      <h3>
+        Room Name:
+      </h3>
+      <input id="new-room-name" />
+
+
+      <div>
+        <br /> Current record:
+        <input id="new-room-record" />
+        <br />Held by:
+        <select id="new-room-record-team">
+          <option value="">Pick a team</option>
+          <% teams.forEach(function(t) { %>
+            <option value="<%- t.name %>">
+              <%= t.name %>
+            </option>
+            <% }); %>
+        </select>
+      </div>
+
+      <button id="add-room">Save</button>
+
+    </div>
+
+    <% include ../partials/footer.ejs %>
+</body>
+
+</html>

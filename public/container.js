@@ -15,3 +15,18 @@ if (document.getElementById('team-save')) {
     window.location.href = '/teamUpdate?id=' + id + '&teamName=' + teamName;
   };
 }
+
+if (document.getElementById('add-room')) {
+  console.log('eyo');
+  document.getElementById('add-room').onclick = () => {
+    let roomName = document.getElementById("new-room-name").value;
+
+    let record = document.getElementById("new-room-record").value;
+
+    let recordHolder = document.getElementById("new-room-record-team").value;
+
+    window.location.href = `/roomInsert?roomName=${roomName}&time=${record}&name=${recordHolder}`;
+  };
+}
+
+console.log('aa');
