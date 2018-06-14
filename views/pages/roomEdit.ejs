@@ -13,16 +13,29 @@
       <h3>
         Room Name:
       </h3>
-      <input value='<%- room.roomName %>' />
-
+      <input id="edit-room-name" value='<%- room.roomName %>' />
 
       <div>
         <br /> Current record:
-        <input value='<%- room.time %>' />
+        <input id="edit-room-time" value='<%- room.time %>' />
         <br />Held by:
-        <input value='<%- room.name %>' />
-        <br />ID:
-        <%= room.id %>
+
+
+        <select id="edit-room-team">
+          <option value="<%- room.name %>">
+            <%= room.name %>
+          </option>
+          <% teams.forEach(function(t) { %>
+            <option value="<%- t.name %>">
+              <%= t.name %>
+            </option>
+            <% }); %>
+        </select>
+
+        <br /> ID:
+        <div id="room-id">
+          <%= room.id %>
+        </div>
       </div>
 
       <button id="room-save">Save</button>

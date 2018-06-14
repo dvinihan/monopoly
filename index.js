@@ -100,11 +100,13 @@ con.connect(err => {
   });
 
   app.get('/roomEdit', (req, res) => {
-    con.query("SELECT * FROM rooms WHERE id=" + req.query.id, (err, result) => {
-      if (err) throw err;
-      var room = result[0];
+    getData(function (rooms, teams) {
+      con.query("SELECT * FROM rooms WHERE id=" + req.query.id, (err, result) => {
+        if (err) throw err;
+        var thisRoom = result[0];
 
-      res.render('pages/roomEdit', { room: room });
+        res.render('pages/roomEdit', { room: thisRoom, teams: teams });
+      });
     });
   });
 
@@ -147,6 +149,19 @@ con.connect(err => {
     });
   });
 
+  app.get('/roomUpdate', (req, res) => {
+    getData(function (rooms, teams) {
+      let teamID = teams.find(team => team.name === req.query.teamName).id;
+
+      let query = `UPDATE rooms SET roomName = '${req.query.roomName}', time = '${req.query.time}', team = '${teamID}' WHERE id = '${req.query.id}'`;
+
+      con.query(query, (err, result) => {
+        if (err) throw err;
+        res.redirect('/admin');
+      });
+    });
+
+  });
 
   app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 });

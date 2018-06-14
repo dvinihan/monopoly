@@ -27,7 +27,7 @@
           <div>Current record:
             <%= r.time %>
               <br /> Held by:
-              <%= r.name %>
+							<%= teams.find(team => team.id === r.team).name %>
                 <br />ID:
                 <%= r.id %>
           </div>

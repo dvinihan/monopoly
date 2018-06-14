@@ -17,7 +17,6 @@ if (document.getElementById('team-save')) {
 }
 
 if (document.getElementById('add-room')) {
-  console.log('eyo');
   document.getElementById('add-room').onclick = () => {
     let roomName = document.getElementById("new-room-name").value;
 
@@ -29,4 +28,16 @@ if (document.getElementById('add-room')) {
   };
 }
 
-console.log('aa');
+//////////////////    WORKING
+if (document.getElementById('room-save')) {
+  console.log('ppp');
+  document.getElementById('room-save').onclick = () => {
+    let roomName = document.getElementById('edit-room-name').value;
+    let time = document.getElementById('edit-room-time').value;
+    let teamName = document.getElementById('edit-room-team').value;
+    let id = document.getElementById('room-id').innerHTML.trim();
+
+    window.location.href = '/roomUpdate?id=' + id + '&roomName=' + roomName + '&time=' + time + '&teamName=' + teamName;
+  };
+}
+
