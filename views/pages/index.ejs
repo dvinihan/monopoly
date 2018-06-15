@@ -20,13 +20,14 @@
 					<h3>
 						<%= r.roomName %>
 					</h3>
-					<div>
-						Current record:
-						<%= r.time %>
-							<br /> Held by:
-							<%= teams.find(team => team.id === r.team).name %>
-					</div>
-					<% }); %>
+					<% if(r.team !== null) { %>
+						<div>
+							Current record:
+							<%= r.time %>
+								<br /> Held by:
+								<%= teams.find(team => team.id === r.team).name %>
+						</div>
+						<% }}); %>
 			</ul>
 
 			<h2>Teams</h2>

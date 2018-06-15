@@ -124,23 +124,28 @@ con.connect(err => {
   app.get('/roomUpdate', (req, res) => {
     getData(function (rooms, teams) {
       let oldTeamID = rooms.find(room => room.id == req.query.id).team;
-      let newTeamID = teams.find(team => team.name === req.query.teamName).id;
+      let newTeamID = null;
+      if (req.query.teamName !== "") {
+        newTeamID = teams.find(team => team.name === req.query.teamName).id;
+      } 
 
       con.query(`UPDATE rooms SET roomName = '${req.query.roomName}', time = '${req.query.time}', team = '${newTeamID}' WHERE id = '${req.query.id}'`, (err) => {
         if (err) throw err;
 
-
         //if record holder changed, alter the 2 teams' record amounts
         if (oldTeamID !== newTeamID) {
-          teamRecordCountEdit(1, newTeamID, () => {
-            teamRecordCountEdit(-1, oldTeamID, () => {
-              res.redirect('/admin');
+          if (newTeamID !== null) {
+            teamRecordCountEdit(1, newTeamID, () => {
+              if (oldTeamID !== null) {
+                teamRecordCountEdit(-1, oldTeamID, () => {
+                });
+              }
             });
-          });
+          }
         }
-
       });
     });
+    res.redirect('/admin');
   });
 
   app.get('/teamUpdate', (req, res) => {
@@ -202,9 +207,12 @@ con.connect(err => {
   });
 
   app.get('/deleteTeamAction', (req, res) => {
-    con.query(`DELETE FROM teams WHERE id = '${req.query.id}'`, (err) => {
+    con.query(`UPDATE rooms SET team = null WHERE team=${req.query.id}`, (err) => {
       if (err) throw err;
-      res.redirect('/admin');
+      con.query(`DELETE FROM teams WHERE id = '${req.query.id}'`, (err) => {
+        if (err) throw err;
+        res.redirect('/admin');
+      });
     });
   });
 
