@@ -17,22 +17,22 @@ if (document.getElementById('team-save')) {
 
 if (document.getElementById('add-room')) {
   document.getElementById('add-room').onclick = () => {
-    let roomName = document.getElementById('new-room-name').value;
-    let record = document.getElementById('new-room-record').value;
-    let recordHolder = document.getElementById('new-room-record-team').value;
+    let name = document.getElementById('new-room-name').value;
+    let time = document.getElementById('new-room-record').value;
+    let teamId = document.getElementById('new-room-record-team').value;
 
-    window.location.href = `/roomInsert?roomName=${roomName}&time=${record}&team=${recordHolder}`;
+    window.location.href = `/roomInsert?name=${name}&time=${time}&teamId=${teamId}`;
   };
 }
 
 if (document.getElementById('room-save')) {
   document.getElementById('room-save').onclick = () => {
-    let roomName = document.getElementById('edit-room-name').value;
+    let name = document.getElementById('edit-room-name').value;
     let time = document.getElementById('edit-room-time').value;
     let teamName = document.getElementById('edit-room-team').value;
     let id = document.getElementById('room-id').innerHTML.trim();
 
-    window.location.href = '/roomUpdate?id=' + id + '&roomName=' + roomName + '&time=' + time + '&teamName=' + teamName;
+    window.location.href = '/roomUpdate?id=' + id + '&name=' + name + '&time=' + time + '&teamName=' + teamName;
   };
 }
 

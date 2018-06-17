@@ -18,14 +18,14 @@
 			<ul>
 				<% rooms.forEach(function(r) { %>
 					<h3>
-						<%= r.roomName %>
+						<%= r.name %>
 					</h3>
 					<% if(r.team !== null) { %>
 						<div>
 							Current record:
 							<%= r.time %>
 								<br /> Held by:
-								<%= teams.find(team => team.id === r.team).name %>
+								<%= teams.find(team => team.id === r.teamId).name %>
 						</div>
 						<% }}); %>
 			</ul>
@@ -38,8 +38,8 @@
 						<%= t.name %>
 					</h3>
 					<div>
-						Current records held:
-						<%= t.records %>
+						Score:
+						<%= t.score %>
 					</div>
 					<% }); %>
 			</ul>

@@ -27,13 +27,13 @@
       <div>
         <% rooms.forEach(function(r) { %>
           <h3>
-            <%= r.roomName %>
+            <%= r.name %>
           </h3>
-          <% if(r.team !== null) { %>
+          <% if(r.teamId !== null) { %>
             <div>Current record:
               <%= r.time %>
                 <br /> Held by:
-                <%= teams.find(team => team.id === r.team).name %>
+                <%= teams.find(team => team.id === r.teamId).name %>
                   <br />
                   <% } %>
                     Room ID:
@@ -58,20 +58,20 @@
       </h4>
 
       <div>
-        <% teams.forEach(function(r) { %>
+        <% teams.forEach(function(t) { %>
           <h3>
-            <%= r.name %>
+            <%= t.name %>
           </h3>
 
           <div>
-            Current records held:
-            <%= r.records %>
+            Score
+            <%= t.score %>
               <br />Team ID:
-              <%= r.id %>
+              <%= t.id %>
           </div>
 
           <div class="edit-link">
-            <a id="edit" href="/teamEdit?id=<%- r.id %>">Edit</a>
+            <a id="edit" href="/teamEdit?id=<%- t.id %>">Edit</a>
           </div>
 
           <% }); %>
