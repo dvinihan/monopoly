@@ -13,13 +13,13 @@
       <h2>Rooms</h2>
 
       <h4>
-        <a href="/addRoom">
+        <a href="/roomAddPage">
           <u>Add a room</u>
         </a>
       </h4>
 
       <h4>
-        <a href="/deleteRoomPage">
+        <a href="/roomDeletePage">
           <u>Delete a room</u>
         </a>
       </h4>
@@ -41,7 +41,7 @@
             </div>
 
             <div class="edit-link">
-              <a id="edit" href="/roomEdit?id=<%- r.id %>">Edit</a>
+              <a id="edit" href="/roomEditPage?id=<%- r.id %>">Edit</a>
             </div>
 
             <% }); %>
@@ -52,7 +52,7 @@
       <h2>Teams</h2>
 
       <h4>
-        <a href="/deleteTeamPage">
+        <a href="/teamDeletePage">
           <u>Delete a team</u>
         </a>
       </h4>
@@ -71,7 +71,7 @@
           </div>
 
           <div class="edit-link">
-            <a id="edit" href="/teamEdit?id=<%- t.id %>">Edit</a>
+            <a id="edit" href="/teamEditPage?id=<%- t.id %>">Edit</a>
           </div>
 
           <% }); %>

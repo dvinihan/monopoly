@@ -19,6 +19,18 @@ try {
 }
 ///////////////////////////////
 
+//Apostrophe check
+function fixQuote(string) {
+  let newString = '';
+
+  for (let i = 0; i < string.length; i++) {
+    if (string[i] === "'") {
+      newString += "''";
+    } else newString += string[i];
+  }
+
+  return newString;
+}
 
 //connect to mysql db
 con.connect(err => {
@@ -72,7 +84,7 @@ con.connect(err => {
     res.render('pages/signup', {});
   });
 
-  app.get('/team-submit', (req, res) => {
+  app.get('/teamSubmit', (req, res) => {
     //check if the name is already taken
     con.query('SELECT * FROM teams', (err, result) => {
       if (err) throw err;
@@ -89,10 +101,11 @@ con.connect(err => {
         res.render('pages/signupError');
       } else {
         //add to sql db
-        con.query(`INSERT INTO teams (name) VALUES ('${req.query.teamName}')`, (err) => {
+        let teamName = fixQuote(req.query.teamName);
+        con.query(`INSERT INTO teams (name) VALUES ('${teamName}')`, (err) => {
           if (err) throw err;
           //render signup landing page
-          res.render('pages/teamSubmit', { teamName: req.query.teamName });
+          res.render('pages/teamSubmit', { teamName: teamName });
         });
       }
     });
@@ -101,7 +114,7 @@ con.connect(err => {
 
 
   //Team Edit Page
-  app.get('/teamEdit', (req, res) => {
+  app.get('/teamEditPage', (req, res) => {
     con.query('SELECT * FROM teams WHERE id=' + req.query.id, (err, result) => {
       if (err) throw err;
       var team = result[0];
@@ -111,16 +124,21 @@ con.connect(err => {
   });
 
   //Team Edit Action
-  app.get('/teamUpdate', (req, res) => {
-    con.query(`UPDATE teams SET name = '${req.query.teamName}' WHERE id=${req.query.id}`, (err) => {
-      if (err) throw err;
-      res.redirect('/admin');
-    });
+  app.get('/teamEditAction', (req, res) => {
+    if (req.query.teamName === "") {
+      res.render('pages/error');
+    } else {
+      let teamName = fixQuote(req.query.teamName);
+      con.query(`UPDATE teams SET name = '${teamName}' WHERE id=${req.query.id}`, (err) => {
+        if (err) throw err;
+        res.redirect('/admin');
+      });
+    }
   });
   ///////////////////////////////
 
   //Room Edit Page
-  app.get('/roomEdit', (req, res) => {
+  app.get('/roomEditPage', (req, res) => {
     getData(function (rooms, teams) {
       con.query('SELECT * FROM rooms WHERE id=' + req.query.id, (err, result) => {
         if (err) throw err;
@@ -132,17 +150,22 @@ con.connect(err => {
   });
 
   //Room Edit Action
-  app.get('/roomUpdate', (req, res) => {
+  app.get('/roomEditAction', (req, res) => {
     getData(function (rooms, teams) {
-      let teamId = null;
-      if (req.query.teamName !== "") {
-        teamId = teams.find(team => team.name === req.query.teamName).id;
+      if (req.query.teamName === "") {
+        res.render('pages/error');
+      } else {
+        let teamId = null;
+        if (req.query.teamName !== "") {
+          teamId = teams.find(team => team.name === req.query.teamName).id;
+        }
+
+        let name = fixQuote(req.query.name);
+        con.query(`UPDATE rooms SET name = '${name}', time = '${req.query.time}', teamId = '${teamId}' WHERE id = '${req.query.id}'`, (err) => {
+          if (err) throw err;
+
+        });
       }
-
-      con.query(`UPDATE rooms SET name = '${req.query.name}', time = '${req.query.time}', teamId = '${teamId}' WHERE id = '${req.query.id}'`, (err) => {
-        if (err) throw err;
-
-      });
     });
     res.redirect('/admin');
   });
@@ -150,45 +173,50 @@ con.connect(err => {
 
 
   //Room Add Page
-  app.get('/addRoom', (req, res) => {
+  app.get('/roomAddPage', (req, res) => {
     getData(function (rooms, teams) {
       res.render('pages/addRoom', { teams: teams });
     });
   });
 
   //Room Add Action
-  app.get('/roomInsert', (req, res) => {
+  app.get('/roomAddAction', (req, res) => {
     getData(function (rooms, teams) {
-      let exists = false;
-      for (let i = 0; i < rooms.length; i++) {
-        if (rooms[i].name === req.query.name) {
-          exists = true;
-        }
-      }
-
-      if (exists) {
-        res.render('pages/roomAddError');
+      if (req.query.teamName === "") {
+        res.render('pages/error');
       } else {
-        //add to sql db
-        con.query(`INSERT INTO rooms (name, time, teamId) VALUES('${req.query.name}', '${req.query.time}', '${req.query.teamId}')`, (err) => {
-          if (err) throw err;
-          //render signup landing page
-          res.redirect('/admin');
-        });
+        let exists = false;
+        for (let i = 0; i < rooms.length; i++) {
+          if (rooms[i].name === req.query.name) {
+            exists = true;
+          }
+        }
+
+        if (exists) {
+          res.render('pages/roomAddError');
+        } else {
+          //add to sql db
+          let name = fixQuote(req.query.name);
+          con.query(`INSERT INTO rooms (name, time, teamId) VALUES('${name}', '${req.query.time}', '${req.query.teamId}')`, (err) => {
+            if (err) throw err;
+            //render signup landing page
+            res.redirect('/admin');
+          });
+        }
       }
     });
   });
   ///////////////////////////////
 
   //Room Delete Page
-  app.get('/deleteRoomPage', (req, res) => {
+  app.get('/roomDeletePage', (req, res) => {
     getData(function (rooms, teams) {
       res.render('pages/deleteRoom', { rooms: rooms, teams: teams });
     });
   });
 
   //Room Delete Action 
-  app.get('/deleteRoomAction', (req, res) => {
+  app.get('/roomDeleteAction', (req, res) => {
     con.query(`DELETE FROM rooms WHERE id = '${req.query.id}'`, (err) => {
       if (err) throw err;
       res.redirect('/admin');
@@ -198,14 +226,14 @@ con.connect(err => {
 
 
   //Team Delete Page
-  app.get('/deleteTeamPage', (req, res) => {
+  app.get('/teamDeletePage', (req, res) => {
     getData(function (rooms, teams) {
       res.render('pages/deleteTeam', { rooms: rooms, teams: teams });
     });
   });
 
   //Team Delete Action
-  app.get('/deleteTeamAction', (req, res) => {
+  app.get('/teamDeleteAction', (req, res) => {
     con.query(`DELETE FROM teams WHERE id = '${req.query.id}'`, (err) => {
       if (err) throw err;
       res.redirect('/admin');
