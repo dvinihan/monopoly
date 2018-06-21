@@ -29,7 +29,7 @@
           <h3>
             <%= r.name %>
           </h3>
-          <% if(r.teamId !== null) { %>
+          <% if(r.teamId !== 0) { %>
             <div>Current record:
               <%= r.time %>
                 <br /> Held by:
@@ -47,7 +47,10 @@
             <% }); %>
       </div>
 
-      <hr style="border-top: 3px solid black">
+    </div>
+    <hr style="border-top: 3px solid black">
+
+    <div class="container">
 
       <h2>Teams</h2>
 

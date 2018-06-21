@@ -5,6 +5,36 @@ var mysql = require('mysql');
 
 const app = express();
 
+/*
+//set up passport
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+
+
+passport.use(new LocalStrategy(
+  function (username, password, done) {
+    User.findOne({ username: username }, function (err, user) {
+      if (err) { return done(err); }
+      if (!user) {
+        return done(null, false, { message: 'Incorrect username.' });
+      }
+      if (!user.validPassword(password)) {
+        return done(null, false, { message: 'Incorrect password.' });
+      }
+      return done(null, user);
+    });
+  }
+));
+
+app.post('/login',
+  passport.authenticate('local', {
+    successRedirect: '/admin',
+    failureRedirect: '/login',
+    failureFlash: true
+  })
+);
+//////////////
+*/
 //create connection to mysql db
 try {
   var con = mysql.createConnection({
@@ -68,6 +98,10 @@ con.connect(err => {
   ///////////////////////////////
 
 
+  //Login Page
+  app.get('/login', (req, res) => {
+    res.render('pages/login', {});
+  });
 
   //Admin Page
   app.get('/admin', (req, res) => {
@@ -153,9 +187,11 @@ con.connect(err => {
   app.get('/roomEditAction', (req, res) => {
     getData(function (rooms, teams) {
       if (req.query.teamName === "") {
-        res.render('pages/error');
+        getData(function (rooms, teams) {
+          res.render('pages/error', { rooms: rooms, teams: teams });
+        });
       } else {
-        let teamId = null;
+        let teamId = 0;
         if (req.query.teamName !== "") {
           teamId = teams.find(team => team.name === req.query.teamName).id;
         }
@@ -163,11 +199,10 @@ con.connect(err => {
         let name = fixQuote(req.query.name);
         con.query(`UPDATE rooms SET name = '${name}', time = '${req.query.time}', teamId = '${teamId}' WHERE id = '${req.query.id}'`, (err) => {
           if (err) throw err;
-
+          res.redirect('/admin');
         });
       }
     });
-    res.redirect('/admin');
   });
   ///////////////////////////////
 

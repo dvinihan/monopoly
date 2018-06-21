@@ -8,21 +8,21 @@
 <body>
 
   <% include ../partials/top.ejs %>
+    <div class="container">
+      <h3>Choose a team to delete:</h3>
 
-    <h3>Choose a team to delete:</h3>
+      <select style="margin-left:30px;" id="select-delete-team">
+        <option value=''></option>
+        <% teams.forEach(function(t) { %>
+          <option value="<%- t.id %>">
+            <%= t.name %>
+          </option>
+          <% }); %>
+      </select>
 
-    <select style="margin-left:30px;" id="select-delete-team">
-      <option value=''></option>
-      <% teams.forEach(function(t) { %>
-        <option value="<%- t.id %>">
-          <%= t.name %>
-        </option>
-        <% }); %>
-    </select>
+      <button id="team-delete-button">Delete</button>
 
-    <button id="team-delete-button">Delete</button>
-
-
+    </div>
     <% include ../partials/footer.ejs %>
 </body>
 

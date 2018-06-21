@@ -8,20 +8,21 @@
 <body>
 
   <% include ../partials/top.ejs %>
+    <div class="container">
 
-    <h3>Choose a room to delete:</h3>
+      <h3>Choose a room to delete:</h3>
 
-    <select style="margin-left:30px;" id="select-delete-room">
-      <option value=''></option>
-      <% rooms.forEach(function(r) { %>
-        <option value="<%- r.id %>">
-          <%= r.name %>
-        </option>
-        <% }); %>
-    </select>
+      <select style="margin-left:30px;" id="select-delete-room">
+        <option value=''></option>
+        <% rooms.forEach(function(r) { %>
+          <option value="<%- r.id %>">
+            <%= r.name %>
+          </option>
+          <% }); %>
+      </select>
 
-    <button id="room-delete-button">Delete</button>
-
+      <button id="room-delete-button">Delete</button>
+    </div>
 
     <% include ../partials/footer.ejs %>
 </body>

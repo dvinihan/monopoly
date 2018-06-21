@@ -52,6 +52,9 @@
 
 .team-edit, .room-edit {
   margin: 30px;
+}
 
+.error-message {
+  color: red;
 }
 

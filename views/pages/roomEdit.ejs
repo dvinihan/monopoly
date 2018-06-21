@@ -13,7 +13,7 @@
       <h3>
         Room Name:
       </h3>
-      <input id="edit-room-name" value='<%- room.name %>' />
+      <input id="edit-room-name" value="<%- room.name %>" />
 
       <div>
         <br /> Current record:
@@ -21,9 +21,9 @@
         <br />Held by:
 
         <select id="edit-room-team">
-          <% if(room.team !== null) { %>
-            <option value="<%- teams.find(team => team.id === room.team).name %>">
-              <% var teamName = teams.find(team => team.id === room.team).name %>
+          <% if(room.teamId !== 0) { %>
+            <option value="<%- teams.find(team => team.id === room.teamId).name %>">
+              <% var teamName = teams.find(team => team.id === room.teamId).name %>
                 <%= teamName %>
             </option>
             <% } else { %>
