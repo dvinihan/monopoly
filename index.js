@@ -1,40 +1,10 @@
 const express = require('express');
 const path = require('path');
 const PORT = process.env.PORT || 5000;
-var mysql = require('mysql');
+const mysql = require('mysql');
 
 const app = express();
 
-/*
-//set up passport
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-
-
-passport.use(new LocalStrategy(
-  function (username, password, done) {
-    User.findOne({ username: username }, function (err, user) {
-      if (err) { return done(err); }
-      if (!user) {
-        return done(null, false, { message: 'Incorrect username.' });
-      }
-      if (!user.validPassword(password)) {
-        return done(null, false, { message: 'Incorrect password.' });
-      }
-      return done(null, user);
-    });
-  }
-));
-
-app.post('/login',
-  passport.authenticate('local', {
-    successRedirect: '/admin',
-    failureRedirect: '/login',
-    failureFlash: true
-  })
-);
-//////////////
-*/
 //create connection to mysql db
 try {
   var con = mysql.createConnection({
@@ -81,12 +51,36 @@ con.connect(err => {
         if (err) throw err;
         let teams = result;
 
-        callback(rooms, teams);
+        con.query('SELECT * FROM users', (err, result) => {
+          if (err) throw err;
+          let users = result;
 
+          callback(rooms, teams, users);
+
+        });
       });
     });
   }
   ///////////////////////////////
+  app.get('/verify', (req, res) => {
+    console.log('in verify');
+    getData(function (rooms, teams, users) {
+      console.log('users:');
+      console.log(users);
+
+      let verified = false;
+      users.forEach(user => {
+        if (user.username === req.query.username) {
+          if (user.password === req.query.password) {
+            verified = true;
+          }
+        }
+      });
+
+
+      verified ? res.redirect('/admin') : res.redirect('/login');
+    });
+  });
 
 
   //Home Page

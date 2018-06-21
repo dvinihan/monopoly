@@ -52,4 +52,13 @@ if (document.getElementById('team-delete-button')) {
   };
 }
 
+if (document.getElementById('login-button')) {
+  document.getElementById('login-button').onclick = () => {
+    let username = document.getElementById('username').value;
+    let password = document.getElementById('password').value;
+
+    window.location.href = `/verify?username=${username}&password=${password}`;
+  };
+}
+
 
