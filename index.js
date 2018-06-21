@@ -42,6 +42,8 @@ con.connect(err => {
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
 
+  let adminVerified = false;
+
   function getData(callback) {
     con.query('SELECT * FROM rooms', (err, result) => {
       if (err) throw err;
@@ -63,22 +65,20 @@ con.connect(err => {
   }
   ///////////////////////////////
   app.get('/verify', (req, res) => {
-    console.log('in verify');
     getData(function (rooms, teams, users) {
-      console.log('users:');
-      console.log(users);
-
-      let verified = false;
       users.forEach(user => {
         if (user.username === req.query.username) {
           if (user.password === req.query.password) {
-            verified = true;
+            adminVerified = true;
+            //set a timeout for 10 minutes, after which the user will no longer be logged in.
+            setTimeout(() => {
+              adminVerified = false;
+            }, 600000);
           }
         }
       });
 
-
-      verified ? res.redirect('/admin') : res.redirect('/login');
+      adminVerified ? res.redirect('/admin') : res.redirect('/login');
     });
   });
 
@@ -94,11 +94,14 @@ con.connect(err => {
 
   //Login Page
   app.get('/login', (req, res) => {
-    res.render('pages/login', {});
+    adminVerified ? res.redirect('/admin') : res.render('pages/login', {});
   });
 
   //Admin Page
   app.get('/admin', (req, res) => {
+    if (!adminVerified) {
+      res.redirect("/login");
+    }
     getData(function (rooms, teams) {
       res.render('pages/admin', { rooms: rooms, teams: teams });
     });
