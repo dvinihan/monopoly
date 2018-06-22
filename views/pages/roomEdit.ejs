@@ -21,20 +21,18 @@
         <br />Held by:
 
         <select id="edit-room-team">
-          <% if(room.teamId !== 0) { %>
-            <option value="<%- teams.find(team => team.id === room.teamId).name %>">
-              <% var teamName = teams.find(team => team.id === room.teamId).name %>
-                <%= teamName %>
-            </option>
-            <% } else { %>
-              <option value=""></option>
-              <% } %>
-                <% teams.forEach(function(t) { %>
-                  <% if (teamName !== t.name) {%>
-                    <option value="<%- t.name %>">
-                      <%= t.name %>
-                    </option>
-                    <% }}); %>
+          <option value="">--None--</option>
+          <% var teamName = teams.find(team => team.id === room.teamId).name %>
+            <% teams.forEach(function(t) { %>
+              <% if (teamName !== t.name) {%>
+                <option value="<%- t.name %>">
+                  <%= t.name %>
+                </option>
+                <% } else { %>
+                  <option value="<%- t.name %>" selected>
+                    <%= t.name %>
+                  </option>
+                  <% }}); %>
         </select>
 
         <br /> ID:

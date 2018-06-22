@@ -3,13 +3,33 @@
 
 <head>
   <% include ../partials/header.ejs %>
+
+    <style>
+      .roomContainer {
+        position: relative;
+        float: left;
+        left: 80px;
+      }
+
+      .teamContainer {
+        position: relative;
+        float: right;
+        right: 80px;
+      }
+
+      h2 {
+        text-align: center;
+        text-decoration-line: underline;
+      }
+    </style>
+
 </head>
 
 <body>
 
   <% include ../partials/top.ejs %>
 
-    <div class="container">
+    <div class="roomContainer">
       <h2>Rooms</h2>
 
       <h4>
@@ -29,28 +49,26 @@
           <h3>
             <%= r.name %>
           </h3>
-          <% if(r.teamId !== 0) { %>
-            <div>Current record:
-              <%= r.time %>
-                <br /> Held by:
+          <div>Current record:
+            <%= r.time %>
+              <br /> Held by:
+              <% if(r.teamId) { %>
                 <%= teams.find(team => team.id === r.teamId).name %>
-                  <br />
                   <% } %>
-                    Room ID:
+                    <br /> Room ID:
                     <%= r.id %>
-            </div>
+          </div>
 
-            <div class="edit-link">
-              <a id="edit" href="/roomEditPage?id=<%- r.id %>">Edit</a>
-            </div>
+          <div class="edit-link">
+            <a id="edit" href="/roomEditPage?id=<%- r.id %>">Edit</a>
+          </div>
 
-            <% }); %>
+          <% }); %>
       </div>
 
     </div>
-    <hr style="border-top: 3px solid black">
 
-    <div class="container">
+    <div class="teamContainer">
 
       <h2>Teams</h2>
 

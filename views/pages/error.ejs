@@ -9,31 +9,10 @@
 
   <% include ../partials/top.ejs %>
 
-    <div class="room-add">
-      <h3>
-        Room Name:
-      </h3>
-      <input id="new-room-name" />
+    <h2 class="error-message">
+      Sorry, there's been an error.
+    </h2>
 
-      <div>
-        <br /> Current record:
-        <input id="new-room-record" />
-        <br />Held by:
-        <select id="new-room-record-team">
-          <option value="">Pick a team</option>
-          <% teams.forEach(function(t) { %>
-            <option value="<%- t.id %>">
-              <%= t.name %>
-            </option>
-            <% }); %>
-        </select>
-      </div>
-
-      <button id="add-room">Save</button>
-
-      <h2 class="error-message">
-        Sorry, there's been an error.
-      </h2>
 
     </div>
 

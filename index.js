@@ -78,7 +78,7 @@ con.connect(err => {
         }
       });
 
-      adminVerified ? res.redirect('/admin') : res.redirect('/login');
+      adminVerified ? res.redirect('/admin') : res.redirect('/loginError');
     });
   });
 
@@ -94,7 +94,11 @@ con.connect(err => {
 
   //Login Page
   app.get('/login', (req, res) => {
-    adminVerified ? res.redirect('/admin') : res.render('pages/login', {});
+    adminVerified ? res.redirect('/admin') : res.render('pages/login');
+  });
+
+  app.get('/loginError', (req, res) => {
+    res.render('pages/loginError');
   });
 
   //Admin Page
@@ -128,7 +132,7 @@ con.connect(err => {
         }
       }
 
-      if (exists) {
+      if (exists || req.query.teamName === "") {
         res.render('pages/signupError');
       } else {
         //add to sql db
@@ -157,7 +161,9 @@ con.connect(err => {
   //Team Edit Action
   app.get('/teamEditAction', (req, res) => {
     if (req.query.teamName === "") {
-      res.render('pages/error');
+      getData(function (rooms, teams) {
+        res.render('pages/error', { rooms: rooms, teams: teams });
+      })
     } else {
       let teamName = fixQuote(req.query.teamName);
       con.query(`UPDATE teams SET name = '${teamName}' WHERE id=${req.query.id}`, (err) => {
@@ -183,10 +189,8 @@ con.connect(err => {
   //Room Edit Action
   app.get('/roomEditAction', (req, res) => {
     getData(function (rooms, teams) {
-      if (req.query.teamName === "") {
-        getData(function (rooms, teams) {
-          res.render('pages/error', { rooms: rooms, teams: teams });
-        });
+      if (req.query.name === "") {
+        res.render('pages/error', { rooms: rooms, teams: teams });
       } else {
         let teamId = 0;
         if (req.query.teamName !== "") {
@@ -215,7 +219,9 @@ con.connect(err => {
   app.get('/roomAddAction', (req, res) => {
     getData(function (rooms, teams) {
       if (req.query.teamName === "") {
-        res.render('pages/error');
+        getData(function (rooms, teams) {
+          res.render('pages/error', { rooms: rooms, teams: teams });
+        });
       } else {
         let exists = false;
         for (let i = 0; i < rooms.length; i++) {
@@ -225,7 +231,9 @@ con.connect(err => {
         }
 
         if (exists) {
-          res.render('pages/roomAddError');
+          getData(function (rooms, teams) {
+            res.render('pages/error', { rooms: rooms, teams: teams });
+          });
         } else {
           //add to sql db
           let name = fixQuote(req.query.name);

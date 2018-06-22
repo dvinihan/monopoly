@@ -3,16 +3,31 @@
 
 <head>
 	<% include ../partials/header.ejs %>
+
+		<style>
+			.roomContainer {
+				position: relative;
+				float: left;
+				left: 80px;
+			}
+
+			.teamContainer {
+				position: relative;
+				float: right;
+				right: 80px;
+			}
+
+			h2 {
+				text-align: center;
+				text-decoration-line: underline;
+			}
+		</style>
 </head>
 
 <body>
 	<% include ../partials/top.ejs %>
 
-		<div class="alert alert-info text-center" role="alert">
-			Monopoly!
-		</div>
-
-		<div class="container">
+		<div class="roomContainer">
 			<h2>Rooms</h2>
 
 			<ul>
@@ -20,15 +35,19 @@
 					<h3>
 						<%= r.name %>
 					</h3>
-					<% if(r.teamId !== 0) { %>
-						<div>
-							Current record:
-							<%= r.time %>
-								<br /> Held by:
+					<div>
+						Current record:
+						<%= r.time %>
+							<br /> Held by:
+							<% if(r.teamId) { %>
 								<%= teams.find(team => team.id === r.teamId).name %>
-						</div>
-						<% }}); %>
+									<% } %>
+					</div>
+					<% }); %>
 			</ul>
+		</div>
+
+		<div class="teamContainer">
 
 			<h2>Teams</h2>
 

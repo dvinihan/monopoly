@@ -1,6 +1,6 @@
 if (document.getElementById('team-submit-button')) {
   document.getElementById('team-submit-button').onclick = () => {
-    let teamName = document.getElementById('team-name-input').value;
+    let teamName = document.getElementById('team-name-input').value.trim();
 
     window.location.href = '/teamSubmit?teamName=' + teamName;
   };
@@ -8,7 +8,7 @@ if (document.getElementById('team-submit-button')) {
 
 if (document.getElementById('team-save')) {
   document.getElementById('team-save').onclick = () => {
-    let teamName = document.getElementById('team-name-input').value;
+    let teamName = document.getElementById('team-name-input').value.trim();
     let id = document.getElementById('team-id').innerHTML.trim();
 
     window.location.href = '/teamEditAction?id=' + id + '&teamName=' + teamName;
@@ -17,8 +17,8 @@ if (document.getElementById('team-save')) {
 
 if (document.getElementById('add-room')) {
   document.getElementById('add-room').onclick = () => {
-    let name = document.getElementById('new-room-name').value;
-    let time = document.getElementById('new-room-record').value;
+    let name = document.getElementById('new-room-name').value.trim();
+    let time = document.getElementById('new-room-record').value.trim();
     let teamId = document.getElementById('new-room-record-team').value;
 
     window.location.href = `/roomAddAction?name=${name}&time=${time}&teamId=${teamId}`;
@@ -27,9 +27,9 @@ if (document.getElementById('add-room')) {
 
 if (document.getElementById('room-save')) {
   document.getElementById('room-save').onclick = () => {
-    let name = document.getElementById('edit-room-name').value;
-    let time = document.getElementById('edit-room-time').value;
-    let teamName = document.getElementById('edit-room-team').value;
+    let name = document.getElementById('edit-room-name').value.trim();
+    let time = document.getElementById('edit-room-time').value.trim();
+    let teamName = document.getElementById('edit-room-team').value.trim();
     let id = document.getElementById('room-id').innerHTML.trim();
 
     window.location.href = '/roomEditAction?id=' + id + '&name=' + name + '&time=' + time + '&teamName=' + teamName;
