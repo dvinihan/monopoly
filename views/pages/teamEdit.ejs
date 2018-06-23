@@ -3,6 +3,14 @@
 
 <head>
   <% include ../partials/header.ejs %>
+
+    <style>
+      #score,
+      #score-dec,
+      #score-inc {
+        display: inline;
+      }
+    </style>
 </head>
 
 <body>
@@ -14,6 +22,14 @@
         Name:
       </h3>
       <input id='team-name-input' value="<%- team.name %>" />
+      <br />
+      <button id="score-dec">-</button>
+      <div id="score">Score:
+        <span id=score-number>
+          <%= team.score %>
+        </span>
+      </div>
+      <button id="score-inc">+</button>
 
       <div>
         <br />ID:

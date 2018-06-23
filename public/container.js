@@ -11,7 +11,7 @@ if (document.getElementById('team-save')) {
     let teamName = document.getElementById('team-name-input').value.trim();
     let id = document.getElementById('team-id').innerHTML.trim();
 
-    window.location.href = '/teamEditAction?id=' + id + '&teamName=' + teamName;
+    window.location.href = '/teamEditAction?id=' + id + '&teamName=' + teamName + '&score=' + parseInt(document.getElementById('score-number').innerHTML);
   };
 }
 
@@ -60,5 +60,19 @@ if (document.getElementById('login-button')) {
     window.location.href = `/verify?username=${username}&password=${password}`;
   };
 }
+
+if (document.getElementById('score-dec')) {
+  document.getElementById('score-dec').onclick = () => {
+    let oldScore = parseInt(document.getElementById('score-number').innerHTML);
+    document.getElementById('score-number').innerHTML = oldScore - 1;
+  };
+}
+if (document.getElementById('score-inc')) {
+  document.getElementById('score-inc').onclick = () => {
+    let oldScore = parseInt(document.getElementById('score-number').innerHTML);
+    document.getElementById('score-number').innerHTML = oldScore + 1;
+  };
+}
+
 
 

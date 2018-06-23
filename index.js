@@ -166,7 +166,7 @@ con.connect(err => {
       })
     } else {
       let teamName = fixQuote(req.query.teamName);
-      con.query(`UPDATE teams SET name = '${teamName}' WHERE id=${req.query.id}`, (err) => {
+      con.query(`UPDATE teams SET name = '${teamName}', score = '${req.query.score}' WHERE id=${req.query.id}`, (err) => {
         if (err) throw err;
         res.redirect('/admin');
       });
