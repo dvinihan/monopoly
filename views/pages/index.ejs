@@ -3,64 +3,87 @@
 
 <head>
 	<% include ../partials/header.ejs %>
-
-		<style>
-			.roomContainer {
-				position: relative;
-				float: left;
-				left: 80px;
-			}
-
-			.teamContainer {
-				position: relative;
-				float: right;
-				right: 80px;
-			}
-
-			h2 {
-				text-align: center;
-				text-decoration-line: underline;
-			}
-		</style>
 </head>
 
 <body>
 	<% include ../partials/top.ejs %>
 
 		<div class="roomContainer">
-			<h2>Rooms</h2>
+			<h2 class="title">Rooms</h2>
 
 			<ul>
-				<% rooms.forEach(function(r) { %>
-					<h3>
-						<%= r.name %>
-					</h3>
-					<div>
-						Current record:
-						<%= r.time %>
-							<br /> Held by:
-							<% if(r.teamId) { %>
-								<%= teams.find(team => team.id === r.teamId).name %>
+
+				<% if ( admin ) { %>
+					<ul>
+						<h4>
+							<a href="/roomAddPage">
+								<u>Add a room</u>
+							</a>
+						</h4>
+
+						<h4>
+							<a href="/roomDeletePage">
+								<u>Delete a room</u>
+							</a>
+						</h4>
+						<% } %>
+
+
+							<% rooms.forEach(function(r) { %>
+								<h3>
+									<%= r.name %>
+								</h3>
+								<div>
+									Current record:
+									<%= r.time %>
+										<br /> Held by:
+										<% if(r.teamId !== null) { %>
+											<%= teams.find(team => team.id === r.teamId).name %>
+												<% } %>
+								</div>
+
+								<% if ( admin ) { %>
+									<div class="edit-link">
+										<a id="edit" href="/roomEditPage?id=<%- r.id %>">Edit</a>
+									</div>
 									<% } %>
-					</div>
-					<% }); %>
-			</ul>
+
+										<% }); %>
+					</ul>
 		</div>
 
 		<div class="teamContainer">
 
-			<h2>Teams</h2>
+			<h2 class="title">Teams</h2>
 
 			<ul>
-				<% teams.forEach(function(t) { %>
-					<h3>
-						<%= t.name %>
-					</h3>
-					<div>
-						Score:
-						<%= t.score %>
-					</div>
-					<% }); %>
+
+				<% if ( admin ) { %>
+					<h4>
+						<a href="/teamDeletePage">
+							<u>Delete a team</u>
+						</a>
+					</h4>
+					<% } %>
+
+						<% teams.forEach(function(t) { %>
+							<% if(t.id !== 0) { %>
+								<h3>
+									<%= t.name %>
+								</h3>
+								<div>
+									Score:
+									<%= t.score %>
+								</div>
+
+								<% if ( admin ) { %>
+									<div class="edit-link">
+										<a id="edit" href="/teamEditPage?id=<%- t.id %>">Edit</a>
+									</div>
+									<% } %>
+
+										<% } %>
+											<% }); %>
 			</ul>
 
 		</div>

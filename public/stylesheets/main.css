@@ -58,3 +58,21 @@
   color: red;
 }
 
+
+/* index.ejs and admin.ejs styling */
+.roomContainer {
+  position: relative;
+  float: left;
+  left: 80px;
+}
+
+.teamContainer {
+  position: relative;
+  float: right;
+  right: 80px;
+}
+
+.title {
+  text-align: center;
+  text-decoration-line: underline;
+}

@@ -1,3 +1,5 @@
+
+
 if (document.getElementById('team-submit-button')) {
   document.getElementById('team-submit-button').onclick = () => {
     let teamName = document.getElementById('team-name-input').value.trim();

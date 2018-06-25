@@ -64,55 +64,43 @@ con.connect(err => {
     });
   }
   ///////////////////////////////
-  app.get('/verify', (req, res) => {
-    getData(function (rooms, teams, users) {
-      users.forEach(user => {
-        if (user.username === req.query.username) {
-          if (user.password === req.query.password) {
-            adminVerified = true;
-            //set a timeout for 10 minutes, after which the user will no longer be logged in.
-            setTimeout(() => {
-              adminVerified = false;
-            }, 600000);
-          }
-        }
-      });
-
-      adminVerified ? res.redirect('/admin') : res.redirect('/loginError');
-    });
-  });
 
 
   //Home Page
   app.get('/', (req, res) => {
     getData(function (rooms, teams) {
-      res.render('pages/index', { rooms: rooms, teams: teams });
+      res.render('pages/index', { rooms: rooms, teams: teams, admin: adminVerified });
     });
   });
   ///////////////////////////////
-
 
   //Login Page
   app.get('/login', (req, res) => {
-    adminVerified ? res.redirect('/admin') : res.render('pages/login');
-  });
+    //adminVerified is declared and defined as false above, outside of any get call.
 
-  app.get('/loginError', (req, res) => {
-    res.render('pages/loginError');
-  });
+    if (req.query.username && req.query.password) {
 
-  //Admin Page
-  app.get('/admin', (req, res) => {
-    if (!adminVerified) {
-      res.redirect("/login");
+      getData(function (rooms, teams, users) {
+        users.forEach(user => {
+          if (user.username === req.query.username) {
+            if (user.password === req.query.password) {
+              adminVerified = true;
+            }
+          }
+        });
+
+        //set a timeout for 10 minutes, after which the user will no longer be logged in.
+        setTimeout(() => {
+          adminVerified = false;
+        }, 600000);
+
+        adminVerified ? res.redirect('/') : res.render('pages/loginError');
+      });
     }
-    getData(function (rooms, teams) {
-      res.render('pages/admin', { rooms: rooms, teams: teams });
-    });
+    else {
+      adminVerified ? res.redirect('/') : res.render('pages/login');
+    }
   });
-  ///////////////////////////////
-
-
 
   //Team Signup Page
   app.get('/signup', (req, res) => {
@@ -168,7 +156,7 @@ con.connect(err => {
       let teamName = fixQuote(req.query.teamName);
       con.query(`UPDATE teams SET name = '${teamName}', score = '${req.query.score}' WHERE id=${req.query.id}`, (err) => {
         if (err) throw err;
-        res.redirect('/admin');
+        res.redirect('/');
       });
     }
   });
@@ -189,18 +177,15 @@ con.connect(err => {
   //Room Edit Action
   app.get('/roomEditAction', (req, res) => {
     getData(function (rooms, teams) {
-      if (req.query.name === "") {
+      if (req.query.name === "" || req.query.teamName === '') {
         res.render('pages/error', { rooms: rooms, teams: teams });
       } else {
-        let teamId = 0;
-        if (req.query.teamName !== "") {
-          teamId = teams.find(team => team.name === req.query.teamName).id;
-        }
+        let teamId = teams.find(team => team.name === req.query.teamName).id;
 
         let name = fixQuote(req.query.name);
         con.query(`UPDATE rooms SET name = '${name}', time = '${req.query.time}', teamId = '${teamId}' WHERE id = '${req.query.id}'`, (err) => {
           if (err) throw err;
-          res.redirect('/admin');
+          res.redirect('/');
         });
       }
     });
@@ -218,7 +203,7 @@ con.connect(err => {
   //Room Add Action
   app.get('/roomAddAction', (req, res) => {
     getData(function (rooms, teams) {
-      if (req.query.teamName === "") {
+      if (req.query.name === "" || req.query.teamId === '') {
         getData(function (rooms, teams) {
           res.render('pages/error', { rooms: rooms, teams: teams });
         });
@@ -240,7 +225,7 @@ con.connect(err => {
           con.query(`INSERT INTO rooms (name, time, teamId) VALUES('${name}', '${req.query.time}', '${req.query.teamId}')`, (err) => {
             if (err) throw err;
             //render signup landing page
-            res.redirect('/admin');
+            res.redirect('/');
           });
         }
       }
@@ -259,7 +244,7 @@ con.connect(err => {
   app.get('/roomDeleteAction', (req, res) => {
     con.query(`DELETE FROM rooms WHERE id = '${req.query.id}'`, (err) => {
       if (err) throw err;
-      res.redirect('/admin');
+      res.redirect('/');
     });
   });
   ///////////////////////////////
@@ -276,7 +261,7 @@ con.connect(err => {
   app.get('/teamDeleteAction', (req, res) => {
     con.query(`DELETE FROM teams WHERE id = '${req.query.id}'`, (err) => {
       if (err) throw err;
-      res.redirect('/admin');
+      res.redirect('/');
     });
   });
   ///////////////////////////////

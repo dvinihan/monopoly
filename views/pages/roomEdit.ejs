@@ -21,7 +21,6 @@
         <br />Held by:
 
         <select id="edit-room-team">
-          <option value="">--None--</option>
           <% var teamName = teams.find(team => team.id === room.teamId).name %>
             <% teams.forEach(function(t) { %>
               <% if (teamName !== t.name) {%>
