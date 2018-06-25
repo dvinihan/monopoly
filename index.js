@@ -42,7 +42,8 @@ con.connect(err => {
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
 
-  let adminVerified = false;
+  //CHANGE BACK LATER //
+  let adminVerified = true;
 
   function getData(callback) {
     con.query('SELECT * FROM rooms', (err, result) => {
@@ -135,137 +136,129 @@ con.connect(err => {
   });
   ///////////////////////////////
 
-
-  //Team Edit Page
-  app.get('/teamEditPage', (req, res) => {
-    con.query('SELECT * FROM teams WHERE id=' + req.query.id, (err, result) => {
-      if (err) throw err;
-      var team = result[0];
-
-      res.render('pages/teamEdit', { team: team });
-    });
-  });
-
   //Team Edit Action
-  app.get('/teamEditAction', (req, res) => {
-    if (req.query.teamName === "") {
-      getData(function (rooms, teams) {
-        res.render('pages/error', { rooms: rooms, teams: teams });
-      })
-    } else {
-      let teamName = fixQuote(req.query.teamName);
-      con.query(`UPDATE teams SET name = '${teamName}', score = '${req.query.score}' WHERE id=${req.query.id}`, (err) => {
-        if (err) throw err;
-        res.redirect('/');
-      });
-    }
-  });
-  ///////////////////////////////
-
-  //Room Edit Page
-  app.get('/roomEditPage', (req, res) => {
+  app.get('/teamEdit', (req, res) => {
     getData(function (rooms, teams) {
-      con.query('SELECT * FROM rooms WHERE id=' + req.query.id, (err, result) => {
-        if (err) throw err;
-        var thisRoom = result[0];
-
-        res.render('pages/roomEdit', { room: thisRoom, teams: teams });
-      });
-    });
-  });
-
-  //Room Edit Action
-  app.get('/roomEditAction', (req, res) => {
-    getData(function (rooms, teams) {
-      if (req.query.name === "" || req.query.teamName === '') {
-        res.render('pages/error', { rooms: rooms, teams: teams });
-      } else {
-        let teamId = teams.find(team => team.name === req.query.teamName).id;
-
-        let name = fixQuote(req.query.name);
-        con.query(`UPDATE rooms SET name = '${name}', time = '${req.query.time}', teamId = '${teamId}' WHERE id = '${req.query.id}'`, (err) => {
-          if (err) throw err;
-          res.redirect('/');
-        });
-      }
-    });
-  });
-  ///////////////////////////////
-
-
-  //Room Add Page
-  app.get('/roomAddPage', (req, res) => {
-    getData(function (rooms, teams) {
-      res.render('pages/addRoom', { teams: teams });
-    });
-  });
-
-  //Room Add Action
-  app.get('/roomAddAction', (req, res) => {
-    getData(function (rooms, teams) {
-      if (req.query.name === "" || req.query.teamId === '') {
-        getData(function (rooms, teams) {
+      if (req.query.name) {
+        if (req.query.name === "") {
           res.render('pages/error', { rooms: rooms, teams: teams });
-        });
-      } else {
-        let exists = false;
-        for (let i = 0; i < rooms.length; i++) {
-          if (rooms[i].name === req.query.name) {
-            exists = true;
-          }
-        }
-
-        if (exists) {
-          getData(function (rooms, teams) {
-            res.render('pages/error', { rooms: rooms, teams: teams });
-          });
         } else {
-          //add to sql db
-          let name = fixQuote(req.query.name);
-          con.query(`INSERT INTO rooms (name, time, teamId) VALUES('${name}', '${req.query.time}', '${req.query.teamId}')`, (err) => {
+          let newName = fixQuote(req.query.name);
+
+          con.query(`UPDATE teams SET name = '${newName}', score = '${req.query.score}' WHERE id=${req.query.id}`, (err) => {
             if (err) throw err;
-            //render signup landing page
             res.redirect('/');
           });
         }
+      } else {
+        con.query(`SELECT * FROM teams WHERE id=${req.query.id}`, (err, result) => {
+          if (err) throw err;
+          let team = result[0];
+          res.render('pages/teamEdit', { team: team });
+        });
+      }
+    })
+  });
+  ///////////////////////////////
+
+  //LEFT OFF HEREERER
+  //Room Edit Action
+  app.get('/roomEdit', (req, res) => {
+    getData(function (rooms, teams) {
+      if (req.query.name) {
+        if (req.query.name === "") {
+          res.render('pages/error', { rooms: rooms, teams: teams });
+        } else {
+          let teamId = teams.find(team => team.name === req.query.teamName).id;
+
+          let name = fixQuote(req.query.name);
+          con.query(`UPDATE rooms SET name = '${name}', time = '${req.query.time}', teamId = '${teamId}' WHERE id = '${req.query.id}'`, (err) => {
+            if (err) throw err;
+            res.redirect('/');
+          });
+        }
+      } else {
+        con.query('SELECT * FROM rooms WHERE id=' + req.query.id, (err, result) => {
+          if (err) throw err;
+          var thisRoom = result[0];
+
+          res.render('pages/roomEdit', { room: thisRoom, teams: teams });
+        });
+      }
+
+
+    });
+  });
+  ///////////////////////////////
+
+  //Room Add Action
+  app.get('/roomAdd', (req, res) => {
+    getData(function (rooms, teams) {
+
+      if (req.query.name) {
+
+        if (req.query.name.trim() === "") {
+          res.render('pages/error', { rooms: rooms, teams: teams });
+        } else {
+          let exists = false;
+          for (let i = 0; i < rooms.length; i++) {
+            if (rooms[i].name === req.query.name) {
+              exists = true;
+            }
+          }
+
+          if (exists) {
+            res.render('pages/error', { rooms: rooms, teams: teams });
+          } else {
+            //add to sql db
+            let name = fixQuote(req.query.name);
+            con.query(`INSERT INTO rooms (name, time, teamId) VALUES('${name}', '${req.query.time}', '${req.query.teamId}')`, (err) => {
+              if (err) throw err;
+              //render signup landing page
+              res.redirect('/');
+            });
+          }
+        }
+      } else {
+        res.render('pages/roomAdd', { teams: teams });
       }
     });
   });
   ///////////////////////////////
 
-  //Room Delete Page
-  app.get('/roomDeletePage', (req, res) => {
-    getData(function (rooms, teams) {
-      res.render('pages/deleteRoom', { rooms: rooms, teams: teams });
-    });
-  });
-
   //Room Delete Action 
-  app.get('/roomDeleteAction', (req, res) => {
-    con.query(`DELETE FROM rooms WHERE id = '${req.query.id}'`, (err) => {
-      if (err) throw err;
-      res.redirect('/');
+  app.get('/roomDelete', (req, res) => {
+    getData(function (rooms, teams) {
+      if (req.query.id) {
+        con.query(`DELETE FROM rooms WHERE id = '${req.query.id}'`, (err) => {
+          if (err) throw err;
+          res.redirect('/');
+        });
+      } else {
+        res.render('pages/roomDelete', { rooms: rooms, teams: teams });
+      }
     });
+
   });
   ///////////////////////////////
-
-
-  //Team Delete Page
-  app.get('/teamDeletePage', (req, res) => {
-    getData(function (rooms, teams) {
-      res.render('pages/deleteTeam', { rooms: rooms, teams: teams });
-    });
-  });
 
   //Team Delete Action
-  app.get('/teamDeleteAction', (req, res) => {
-    con.query(`DELETE FROM teams WHERE id = '${req.query.id}'`, (err) => {
-      if (err) throw err;
-      res.redirect('/');
+  app.get('/teamDelete', (req, res) => {
+    getData(function (rooms, teams) {
+      if (req.query.id) {
+        //remove association from rooms, then delete the team
+        con.query(`UPDATE rooms SET teamId ='0' WHERE teamId = ${req.query.id}`);
+
+        con.query(`DELETE FROM teams WHERE id = '${req.query.id}'`, (err) => {
+          if (err) throw err;
+          res.redirect('/');
+        });
+      } else {
+        res.render('pages/teamDelete', { rooms: rooms, teams: teams });
+      }
     });
   });
   ///////////////////////////////
-
 
   app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 });

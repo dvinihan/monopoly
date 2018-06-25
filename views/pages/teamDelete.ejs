@@ -8,10 +8,10 @@
 <body>
 
   <% include ../partials/top.ejs %>
-    <div class="container">
+    <form class="container">
       <h3>Choose a team to delete:</h3>
 
-      <select style="margin-left:30px;" id="select-delete-team">
+      <select style="margin-left:30px;" id="select-delete-team" name="id">
         <option value=''></option>
         <% teams.forEach(function(t) { %>
           <% if (t.id !== 0) { %>
@@ -22,9 +22,9 @@
               <% }); %>
       </select>
 
-      <button id="team-delete-button">Delete</button>
+      <button id="team-delete-button" type="submit">Delete</button>
 
-    </div>
+    </form>
     <% include ../partials/footer.ejs %>
 </body>
 

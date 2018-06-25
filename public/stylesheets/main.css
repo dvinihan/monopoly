@@ -59,7 +59,7 @@
 }
 
 
-/* index.ejs and admin.ejs styling */
+/* index.ejs styling */
 .roomContainer {
   position: relative;
   float: left;
@@ -75,4 +75,14 @@
 .title {
   text-align: center;
   text-decoration-line: underline;
+}
+
+.add-delete-link {
+  text-align: center;
+}
+
+.admin-logged-message {
+  text-align: center;
+  font-size: 24px;
+  color: maroon;
 }

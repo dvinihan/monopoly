@@ -9,17 +9,17 @@
 
   <% include ../partials/top.ejs %>
 
-    <div class="room-add container">
+    <form class="room-add container">
       <h3>
         Room Name:
       </h3>
-      <input id="new-room-name" />
+      <input id="new-room-name" name="name" />
 
       <div>
         <br /> Current record:
-        <input id="new-room-record" />
+        <input id="new-room-record" name="time" />
         <br />Held by:
-        <select id="new-room-record-team">
+        <select id="new-room-record-team" name="teamId">
           <% teams.forEach(function(t) { %>
             <option value="<%- t.id %>">
               <%= t.name %>
@@ -28,9 +28,8 @@
         </select>
       </div>
 
-      <button id="add-room">Save</button>
-
-    </div>
+      <button id="add-room" type="submit">Save</button>
+    </form>
 
     <% include ../partials/footer.ejs %>
 </body>

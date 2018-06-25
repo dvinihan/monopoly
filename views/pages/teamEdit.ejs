@@ -17,29 +17,25 @@
 
   <% include ../partials/top.ejs %>
 
-    <div class="team-edit">
+    <form class="team-edit">
       <h3>
         Name:
       </h3>
-      <input id='team-name-input' value="<%- team.name %>" />
+      <input id='team-name-input' value="<%- team.name %>" name="name" />
       <br />
-      <button id="score-dec">-</button>
+      <br />
+
       <div id="score">Score:
-        <span id=score-number>
-          <%= team.score %>
-        </span>
-      </div>
-      <button id="score-inc">+</button>
-
-      <div>
-        <br />ID:
-        <span id='team-id'>
-          <%= team.id %>
-        </span>
+        <input id=score-number value="<%- team.score %>" type="number" style="max-width: 50px" name="score" />
       </div>
 
-      <button id="team-save">Save</button>
-    </div>
+      <br />
+      <br />
+
+      <button id="team-save" type="submit">Save</button>
+
+      <input name="id" value="<%- team.id %>" style="display: none" />
+    </form>
 
     <% include ../partials/footer.ejs %>
 </body>

@@ -9,40 +9,40 @@
 
   <% include ../partials/top.ejs %>
 
-    <div class="room-edit">
+    <form class="room-edit">
       <h3>
         Room Name:
       </h3>
-      <input id="edit-room-name" value="<%- room.name %>" />
+      <input id="edit-room-name" value="<%- room.name %>" name="name" />
 
-      <div>
-        <br /> Current record:
-        <input id="edit-room-time" value='<%- room.time %>' />
-        <br />Held by:
+      <br /> Current record:
+      <input id="edit-room-time" value='<%- room.time %>' name="time" />
+      <br />Held by:
 
-        <select id="edit-room-team">
-          <% var teamName = teams.find(team => team.id === room.teamId).name %>
-            <% teams.forEach(function(t) { %>
-              <% if (teamName !== t.name) {%>
-                <option value="<%- t.name %>">
+      <select id="edit-room-team" name="teamName">
+        <% var teamName = teams.find(team => team.id === room.teamId).name %>
+          <% teams.forEach(function(t) { %>
+            <% if (teamName !== t.name) {%>
+              <option value="<%- t.name %>">
+                <%= t.name %>
+              </option>
+              <% } else { %>
+                <option value="<%- t.name %>" selected>
                   <%= t.name %>
                 </option>
-                <% } else { %>
-                  <option value="<%- t.name %>" selected>
-                    <%= t.name %>
-                  </option>
-                  <% }}); %>
-        </select>
+                <% }}); %>
+      </select>
 
+      <div style="display: none">
         <br /> ID:
-        <div style="display:inline;" id="room-id">
+        <div style="display:inline;" id="room-id" name="id">
           <%= room.id %>
         </div>
       </div>
 
-      <button id="room-save">Save</button>
+      <button id="room-save" type="submit">Save</button>
 
-    </div>
+    </form>
 
     <% include ../partials/footer.ejs %>
 </body>

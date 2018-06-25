@@ -8,85 +8,90 @@
 <body>
 	<% include ../partials/top.ejs %>
 
-		<div class="roomContainer">
-			<h2 class="title">Rooms</h2>
+		<% if ( admin ) { %>
+			<div class="admin-logged-message">
+				Logged in as Admin
+			</div>
+			<% } %>
 
-			<ul>
+				<div class="roomContainer">
+					<h2 class="title">Rooms</h2>
 
-				<% if ( admin ) { %>
-					<ul>
-						<h4>
-							<a href="/roomAddPage">
-								<u>Add a room</u>
-							</a>
-						</h4>
+					<div>
 
-						<h4>
-							<a href="/roomDeletePage">
-								<u>Delete a room</u>
-							</a>
-						</h4>
-						<% } %>
+						<% if ( admin ) { %>
+							<h4 class="add-delete-link">
+								<a href="/roomAdd">
+									<u>Add a room</u>
+								</a>
+							</h4>
+
+							<h4 class="add-delete-link">
+								<a href="/roomDelete">
+									<u>Delete a room</u>
+								</a>
+							</h4>
+							<% } %>
 
 
-							<% rooms.forEach(function(r) { %>
-								<h3>
-									<%= r.name %>
-								</h3>
-								<div>
-									Current record:
-									<%= r.time %>
-										<br /> Held by:
-										<% if(r.teamId !== null) { %>
-											<%= teams.find(team => team.id === r.teamId).name %>
-												<% } %>
-								</div>
-
-								<% if ( admin ) { %>
-									<div class="edit-link">
-										<a id="edit" href="/roomEditPage?id=<%- r.id %>">Edit</a>
+								<% rooms.forEach(function(r) { %>
+									<h3>
+										<%= r.name %>
+									</h3>
+									<div>
+										Current record:
+										<%= r.time %>
+											<br /> Held by:
+											<% if(r.teamId !== null) { %>
+												<%= teams.find(team => team.id === r.teamId).name %>
+													<% } %>
 									</div>
-									<% } %>
 
-										<% }); %>
-					</ul>
-		</div>
-
-		<div class="teamContainer">
-
-			<h2 class="title">Teams</h2>
-
-			<ul>
-
-				<% if ( admin ) { %>
-					<h4>
-						<a href="/teamDeletePage">
-							<u>Delete a team</u>
-						</a>
-					</h4>
-					<% } %>
-
-						<% teams.forEach(function(t) { %>
-							<% if(t.id !== 0) { %>
-								<h3>
-									<%= t.name %>
-								</h3>
-								<div>
-									Score:
-									<%= t.score %>
-								</div>
-
-								<% if ( admin ) { %>
-									<div class="edit-link">
-										<a id="edit" href="/teamEditPage?id=<%- t.id %>">Edit</a>
-									</div>
-									<% } %>
-
+									<% if ( admin ) { %>
+										<div class="edit-link">
+											<a id="edit" href="/roomEdit?id=<%- r.id %>">Edit</a>
+										</div>
 										<% } %>
-											<% }); %>
-			</ul>
 
-		</div>
+											<% }); %>
+					</div>
+				</div>
+
+				<div class="teamContainer">
+
+					<h2 class="title">Teams</h2>
+
+					<div>
+
+						<% if ( admin ) { %>
+							<h4 class="add-delete-link">
+								<a href="/teamDelete">
+									<u>Delete a team</u>
+								</a>
+							</h4>
+							<% } %>
+
+								<% teams.forEach(function(t) { %>
+									<% if(t.id !== 0) { %>
+										<h3>
+											<%= t.name %>
+										</h3>
+										<div>
+											Score:
+											<%= t.score %>
+										</div>
+
+										<% if ( admin ) { %>
+											<div class="edit-link">
+												<a id="edit" href="/teamEdit?id=<%- t.id %>">Edit</a>
+											</div>
+											<% } %>
+
+												<% } %>
+													<% }); %>
+					</div>
+
+				</div>
 
 </body>
 
