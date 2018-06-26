@@ -8,9 +8,29 @@
 <body>
   <% include ../partials/top.ejs %>
 
-    <% include ../partials/loginPartial.ejs %>
+    <% if(error) { %>
+      <div class="alert alert-info text-center" role="alert">
+        Sign-in Error
+      </div>
+    <% } %>
 
-      <% include ../partials/footer.ejs %>
+    <div class="container">
+    <h2>Admin Login</h2>
+  
+    <form>
+      <div>
+        <label>Username:</label>
+        <input type="text" name="username" />
+      </div>
+      <div>
+        <label>Password:</label>
+        <input type="password" name="password" />
+      </div>
+      <button type="submit">Log In</button>
+    </form>
+    
+  </div>
+  
 </body>
 
 </html>

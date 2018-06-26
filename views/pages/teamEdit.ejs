@@ -3,14 +3,6 @@
 
 <head>
   <% include ../partials/header.ejs %>
-
-    <style>
-      #score,
-      #score-dec,
-      #score-inc {
-        display: inline;
-      }
-    </style>
 </head>
 
 <body>
@@ -21,23 +13,22 @@
       <h3>
         Name:
       </h3>
-      <input id='team-name-input' value="<%- team.name %>" name="name" />
+      <input value="<%- team.name %>" name="name" />
       <br />
       <br />
 
-      <div id="score">Score:
-        <input id=score-number value="<%- team.score %>" type="number" style="max-width: 50px" name="score" />
-      </div>
+      <h4>Score: </h4>
+
+      <input class="score-input" value="<%- team.score %>" type="number" name="score" />
 
       <br />
       <br />
 
-      <button id="team-save" type="submit">Save</button>
+      <button type="submit">Save</button>
 
-      <input name="id" value="<%- team.id %>" style="display: none" />
+      <input class="do-not-show" name="id" value="<%- team.id %>" />
     </form>
 
-    <% include ../partials/footer.ejs %>
 </body>
 
 </html>

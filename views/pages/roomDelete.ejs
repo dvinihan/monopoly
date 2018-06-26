@@ -12,7 +12,7 @@
 
       <h3>Choose a room to delete:</h3>
 
-      <select style="margin-left:30px;" id="select-delete-room" name="id">
+      <select name="id">
         <option value=''></option>
         <% rooms.forEach(function(r) { %>
           <option value="<%- r.id %>">
@@ -21,10 +21,9 @@
           <% }); %>
       </select>
 
-      <button id="room-delete-button" type="submit">Delete</button>
+      <button type="submit">Delete</button>
     </form>
 
-    <% include ../partials/footer.ejs %>
 </body>
 
 </html>

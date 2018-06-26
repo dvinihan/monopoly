@@ -56,8 +56,8 @@
 
 .error-message {
   color: red;
+  text-align: center;
 }
-
 
 /* index.ejs styling */
 .roomContainer {
@@ -85,4 +85,29 @@
   text-align: center;
   font-size: 24px;
   color: maroon;
+}
+
+.registered {
+  text-align: center;
+}
+
+.score-input {
+  max-width: 50px;
+  display: inline;
+}
+
+.signup-error-container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+.signup-header{
+  font-size: 25px;
+}
+.team-input {
+  margin-top: 30px;
+}
+
+.do-not-show {
+  display: none;
 }

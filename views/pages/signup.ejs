@@ -3,27 +3,35 @@
 
 <head>
   <% include ../partials/header.ejs %>
-
-    <style>
-      .body {
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .signup-header {
-        font-size: 25px;
-      }
-
-      .team-input {
-        margin-top: 30px;
-      }
-    </style>
 </head>
 
 <body>
-  <% include ../partials/signupPartial.ejs %>
+<% include ../partials/top.ejs %>
 
+  <% if (error) { %>
+    <h2 class="error-message">
+      Sorry, that name is already taken.
+    </h2>
+  <% } %>
+
+  <div class="signup-error-container">
+
+    <div class="signup-header">
+      Team Signup
+    </div>
+
+    <form class="team-input">
+
+      <div>Team Name:</div>
+
+      <input id="team-name-input" type='text' name="teamName" />
+      <br />
+      <button id="team-submit-button" type="submit">Submit</button>
+
+    </form>
+
+  </div>
+  
 </body>
 
 </html>

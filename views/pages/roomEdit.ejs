@@ -13,13 +13,13 @@
       <h3>
         Room Name:
       </h3>
-      <input id="edit-room-name" value="<%- room.name %>" name="name" />
+      <input value="<%- room.name %>" name="name" />
 
       <br /> Current record:
-      <input id="edit-room-time" value='<%- room.time %>' name="time" />
+      <input value='<%- room.time %>' name="time" />
       <br />Held by:
 
-      <select id="edit-room-team" name="teamName">
+      <select name="teamName">
         <% var teamName = teams.find(team => team.id === room.teamId).name %>
           <% teams.forEach(function(t) { %>
             <% if (teamName !== t.name) {%>
@@ -33,18 +33,12 @@
                 <% }}); %>
       </select>
 
-      <div style="display: none">
-        <br /> ID:
-        <div style="display:inline;" id="room-id" name="id">
-          <%= room.id %>
-        </div>
-      </div>
+      <input class="do-not-show" value="<%- room.id %>" name="id" />
 
-      <button id="room-save" type="submit">Save</button>
+      <button type="submit">Save</button>
 
     </form>
 
-    <% include ../partials/footer.ejs %>
 </body>
 
 </html>

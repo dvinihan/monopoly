@@ -42,8 +42,7 @@ con.connect(err => {
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
 
-  //CHANGE BACK LATER //
-  let adminVerified = true;
+  let adminVerified = false;
 
   function getData(callback) {
     con.query('SELECT * FROM rooms', (err, result) => {
@@ -66,16 +65,12 @@ con.connect(err => {
   }
   ///////////////////////////////
 
-
-  //Home Page
   app.get('/', (req, res) => {
     getData(function (rooms, teams) {
       res.render('pages/index', { rooms: rooms, teams: teams, admin: adminVerified });
     });
   });
-  ///////////////////////////////
 
-  //Login Page
   app.get('/login', (req, res) => {
     //adminVerified is declared and defined as false above, outside of any get call.
 
@@ -95,48 +90,46 @@ con.connect(err => {
           adminVerified = false;
         }, 600000);
 
-        adminVerified ? res.redirect('/') : res.render('pages/loginError');
+        adminVerified ? res.redirect('/') : res.render('pages/login', { error: true });
       });
     }
     else {
-      adminVerified ? res.redirect('/') : res.render('pages/login');
+      adminVerified ? res.redirect('/') : res.render('pages/login', { error: false });
     }
   });
 
-  //Team Signup Page
   app.get('/signup', (req, res) => {
-    res.render('pages/signup', {});
-  });
+    if (req.query.teamName) {
+      //check if the name is already taken
+      con.query('SELECT * FROM teams', (err, result) => {
+        if (err) throw err;
+        var teams = result;
 
-  app.get('/teamSubmit', (req, res) => {
-    //check if the name is already taken
-    con.query('SELECT * FROM teams', (err, result) => {
-      if (err) throw err;
-      var teams = result;
-
-      let exists = false;
-      for (let i = 0; i < teams.length; i++) {
-        if (teams[i].name === req.query.teamName) {
-          exists = true;
+        let exists = false;
+        for (let i = 0; i < teams.length; i++) {
+          if (teams[i].name === req.query.teamName) {
+            exists = true;
+          }
         }
-      }
 
-      if (exists || req.query.teamName === "") {
-        res.render('pages/signupError');
-      } else {
-        //add to sql db
-        let teamName = fixQuote(req.query.teamName);
-        con.query(`INSERT INTO teams (name) VALUES ('${teamName}')`, (err) => {
-          if (err) throw err;
-          //render signup landing page
-          res.render('pages/teamSubmit', { teamName: teamName });
-        });
-      }
-    });
+        if (exists || req.query.teamName === "") {
+          res.render('pages/signup', { error: true });
+        } else {
+          //add to sql db
+          let teamName = fixQuote(req.query.teamName);
+          con.query(`INSERT INTO teams (name) VALUES ('${teamName}')`, (err) => {
+            if (err) throw err;
+            //render signup landing page
+            res.render('pages/teamAdd', { teamName: teamName });
+          });
+        }
+      });
+    } else {
+      res.render('pages/signup', { error: false });
+    }
+
   });
-  ///////////////////////////////
 
-  //Team Edit Action
   app.get('/teamEdit', (req, res) => {
     getData(function (rooms, teams) {
       if (req.query.name) {
@@ -159,10 +152,7 @@ con.connect(err => {
       }
     })
   });
-  ///////////////////////////////
 
-  //LEFT OFF HEREERER
-  //Room Edit Action
   app.get('/roomEdit', (req, res) => {
     getData(function (rooms, teams) {
       if (req.query.name) {
@@ -172,6 +162,7 @@ con.connect(err => {
           let teamId = teams.find(team => team.name === req.query.teamName).id;
 
           let name = fixQuote(req.query.name);
+
           con.query(`UPDATE rooms SET name = '${name}', time = '${req.query.time}', teamId = '${teamId}' WHERE id = '${req.query.id}'`, (err) => {
             if (err) throw err;
             res.redirect('/');
@@ -185,16 +176,11 @@ con.connect(err => {
           res.render('pages/roomEdit', { room: thisRoom, teams: teams });
         });
       }
-
-
     });
   });
-  ///////////////////////////////
 
-  //Room Add Action
   app.get('/roomAdd', (req, res) => {
     getData(function (rooms, teams) {
-
       if (req.query.name) {
 
         if (req.query.name.trim() === "") {
@@ -224,9 +210,7 @@ con.connect(err => {
       }
     });
   });
-  ///////////////////////////////
 
-  //Room Delete Action 
   app.get('/roomDelete', (req, res) => {
     getData(function (rooms, teams) {
       if (req.query.id) {
@@ -240,9 +224,7 @@ con.connect(err => {
     });
 
   });
-  ///////////////////////////////
 
-  //Team Delete Action
   app.get('/teamDelete', (req, res) => {
     getData(function (rooms, teams) {
       if (req.query.id) {
