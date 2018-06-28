@@ -2,8 +2,10 @@ const express = require('express');
 const path = require('path');
 const PORT = process.env.PORT || 5000;
 const mysql = require('mysql');
+const bodyParser = require('body-parser');
 
 const app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
 
 //create connection to mysql db
 try {
@@ -37,6 +39,30 @@ con.connect(err => {
   if (err) throw err;
   console.log('Connected!');
 
+  // Middleware to fetch data from MySQL database on each HTTP call
+  app.use((req, res, next) => {
+    con.query('SELECT * FROM rooms', (err, result) => {
+      if (err) throw err;
+      let rooms = result;
+
+      con.query('SELECT * FROM teams', (err, result) => {
+        if (err) throw err;
+        let teams = result;
+
+        con.query('SELECT * FROM users', (err, result) => {
+          if (err) throw err;
+          let users = result;
+
+          req.rooms = rooms;
+          req.teams = teams;
+          req.users = users
+          next();
+        });
+      });
+    });
+  });
+
+
   app.use(express.static(path.join(__dirname, 'public')));
 
   app.set('views', path.join(__dirname, 'views'));
@@ -66,9 +92,7 @@ con.connect(err => {
   ///////////////////////////////
 
   app.get('/', (req, res) => {
-    getData(function (rooms, teams) {
-      res.render('pages/index', { rooms: rooms, teams: teams, admin: adminVerified });
-    });
+    res.render('pages/index', { teams: req.teams });
   });
 
   app.get('/login', (req, res) => {
@@ -90,7 +114,7 @@ con.connect(err => {
           adminVerified = false;
         }, 600000);
 
-        adminVerified ? res.redirect('/') : res.render('pages/login', { error: true });
+        adminVerified ? res.redirect('/admin') : res.render('pages/login', { error: true });
       });
     }
     else {
@@ -98,60 +122,70 @@ con.connect(err => {
     }
   });
 
+  app.get('/admin', (req, res) => {
+    res.render('pages/admin', { rooms: req.rooms, teams: req.teams })
+  })
+
   app.get('/signup', (req, res) => {
-    if (req.query.teamName) {
-      //check if the name is already taken
-      con.query('SELECT * FROM teams', (err, result) => {
-        if (err) throw err;
-        var teams = result;
+    res.render('pages/signup', { error: false });
+  });
 
-        let exists = false;
-        for (let i = 0; i < teams.length; i++) {
-          if (teams[i].name === req.query.teamName) {
-            exists = true;
-          }
+  app.post('/signup', (req, res) => {
+    //check if the name is already taken
+    con.query('SELECT * FROM teams', (err, result) => {
+      if (err) throw err;
+      var teams = result;
+
+      let exists = false;
+      for (let i = 0; i < teams.length; i++) {
+        if (teams[i].name === req.body.teamName) {
+          exists = true;
         }
+      }
 
-        if (exists || req.query.teamName === "") {
-          res.render('pages/signup', { error: true });
-        } else {
-          //add to sql db
-          let teamName = fixQuote(req.query.teamName);
-          con.query(`INSERT INTO teams (name) VALUES ('${teamName}')`, (err) => {
-            if (err) throw err;
-            //render signup landing page
-            res.render('pages/teamAdd', { teamName: teamName });
-          });
-        }
-      });
-    } else {
-      res.render('pages/signup', { error: false });
-    }
+      if (exists || req.query.teamName === "") {
+        res.render('pages/signup', { error: true });
+      } else {
+        //add to sql db
+        let teamName = fixQuote(req.body.teamName);
 
+        con.query(`INSERT INTO teams (name) VALUES ('${teamName}')`, (err) => {
+          if (err) throw err;
+          //render signup landing page
+          res.render('pages/teamAdd', { teamName: teamName });
+        });
+
+      }
+    });
   });
 
   app.get('/teamEdit', (req, res) => {
     getData(function (rooms, teams) {
-      if (req.query.name) {
-        if (req.query.name === "") {
-          res.render('pages/error', { rooms: rooms, teams: teams });
-        } else {
-          let newName = fixQuote(req.query.name);
+      console.log(req.body);
+      con.query(`SELECT * FROM teams WHERE id=${req.query.id}`, (err, result) => {
+        if (err) throw err;
+        let team = result[0];
+        res.render('pages/teamEdit', { team: team });
+      });
+    });
+  });
 
-          con.query(`UPDATE teams SET name = '${newName}', score = '${req.query.score}' WHERE id=${req.query.id}`, (err) => {
-            if (err) throw err;
-            res.redirect('/');
-          });
-        }
+  app.post('/teamEdit', (req, res) => {
+    getData(function (rooms, teams) {
+      if (req.body.name === "") {
+        res.render('pages/error', { rooms: rooms, teams: teams });
       } else {
-        con.query(`SELECT * FROM teams WHERE id=${req.query.id}`, (err, result) => {
+        let newName = fixQuote(req.body.name);
+
+        con.query(`UPDATE teams SET name = '${newName}', score = '${req.body.score}' WHERE id=${req.body.id}`, (err) => {
           if (err) throw err;
-          let team = result[0];
-          res.render('pages/teamEdit', { team: team });
+          res.redirect('/');
         });
       }
-    })
+    });
   });
+
+
 
   app.get('/roomEdit', (req, res) => {
     getData(function (rooms, teams) {

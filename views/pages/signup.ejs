@@ -6,32 +6,32 @@
 </head>
 
 <body>
-<% include ../partials/top.ejs %>
+  <% include ../partials/top.ejs %>
 
-  <% if (error) { %>
-    <h2 class="error-message">
-      Sorry, that name is already taken.
-    </h2>
-  <% } %>
+    <% if (error) { %>
+      <h2 class="error-message">
+        Sorry, that name is already taken.
+      </h2>
+      <% } %>
 
-  <div class="signup-error-container">
+        <div class="signup-error-container">
 
-    <div class="signup-header">
-      Team Signup
-    </div>
+          <div class="signup-header">
+            Team Signup
+          </div>
 
-    <form class="team-input">
+          <form class="team-input" method="post">
 
-      <div>Team Name:</div>
+            <div>Team Name:</div>
 
-      <input id="team-name-input" type='text' name="teamName" />
-      <br />
-      <button id="team-submit-button" type="submit">Submit</button>
+            <input id="team-name-input" type='text' name="teamName" />
+            <br />
+            <button id="team-submit-button" type="submit">Submit</button>
 
-    </form>
+          </form>
 
-  </div>
-  
+        </div>
+
 </body>
 
 </html>
