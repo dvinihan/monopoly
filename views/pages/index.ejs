@@ -6,28 +6,26 @@
 </head>
 
 <body>
-	<% include ../partials/top.ejs %>
+	<% include ../partials/homeTop.ejs %>
 
-		<div class="teamContainer">
-
-			<h2 class="title">Teams</h2>
-
-			<div>
-				<% teams.forEach(function(t) { %>
-					<% if(t.id !== 0) { %>
-						<h3>
+		<table class="home-table-container">
+			<tr class="table-header-row">
+				<th class="header-name">Team Name</th>
+				<th class="header-score">Score</th>
+			</tr>
+			<% teams.forEach(function(t) { %>
+				<% if(t.id !== 0) { %>
+					<tr class="table-row">
+						<td class="table-name">
 							<%= t.name %>
-						</h3>
-						<div>
-							Score:
+						</td>
+						<td class="table-score">
 							<%= t.score %>
-						</div>
-
-
-						<% } %>
-							<% }); %>
-			</div>
-		</div>
+						</td>
+					</tr>
+					<% } %>
+						<% }); %>
+		</table>
 
 </body>
 

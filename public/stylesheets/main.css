@@ -1,3 +1,4 @@
+/* BOOTSTRAP */
 .jumbotron {
   background: rgb(158, 153, 230);
   color: white;
@@ -38,17 +39,27 @@
   max-width: 100%; 
 }
 
-.team-signup-button {
-  float: left;
-  margin-left: 100px;
-  color:white;
+/* HOME TABLE */
+.home-table-container {
+  margin: 0 auto;
+  border: 2px solid black;
+  width: 50%;
+  font-size: 18px;
+}
+.table-header-row {
+  background-color: rgb(179, 173, 173);
+}
+.table-row:nth-of-type(odd){
+  background-color: rgb(212, 193, 193);
 }
 
-.admin-login-button {
-  float: right;
-  margin-right: 100px;
-  color:white;
+.table-score, .header-score {
+  text-align: right;
 }
+th, td {
+  padding: 8px;
+}
+
 
 .team-edit, .room-edit {
   margin: 30px;
@@ -66,12 +77,6 @@
   left: 80px;
 }
 
-.teamContainer {
-  position: relative;
-  float: right;
-  right: 80px;
-}
-
 .title {
   text-align: center;
   text-decoration-line: underline;
@@ -85,10 +90,6 @@
   text-align: center;
   font-size: 24px;
   color: maroon;
-}
-
-.registered {
-  text-align: center;
 }
 
 .score-input {

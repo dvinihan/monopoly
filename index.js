@@ -129,7 +129,7 @@ con.connect(err => {
     } else {
       con.query(`INSERT INTO teams (name) VALUES ('${req.body.teamName}')`, (err) => {
         if (err) throw err;
-        res.render('pages/teamAdd', { teamName: req.body.teamName });
+        res.redirect('/');
       });
 
     }
