@@ -70,11 +70,16 @@ th, td {
   text-align: center;
 }
 
-/* index.ejs styling */
+/* admin.ejs styling */
 .roomContainer {
   position: relative;
   float: left;
   left: 80px;
+}
+.teamContainer {
+  position: relative;
+  float: right;
+  right: 80px;
 }
 
 .title {

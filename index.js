@@ -3,6 +3,7 @@ const path = require('path');
 const PORT = process.env.PORT || 5000;
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
+const session = require('client-sessions');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -21,6 +22,20 @@ try {
 }
 ///////////////////////////////
 
+function sortArray(array) {
+  let newArray = [];
+  array.forEach(item => {
+    for (let i = 0; i < newArray.length; i++) {
+      if (item.name.toLowerCase() < newArray[i].name.toLowerCase()) {
+        newArray.splice(i, 0, item);
+        return;
+      }
+    }
+    newArray.push(item);
+  });
+  return newArray;
+}
+
 //connect to mysql db
 con.connect(err => {
   if (err) throw err;
@@ -32,9 +47,15 @@ con.connect(err => {
       if (err) throw err;
       let rooms = result;
 
+      //sort rooms alphabetically
+      rooms = sortArray(rooms);
+
       con.query('SELECT * FROM teams', (err, result) => {
         if (err) throw err;
         let teams = result;
+
+        //sort teams alphabetically
+        teams = sortArray(teams);
 
         con.query('SELECT * FROM users', (err, result) => {
           if (err) throw err;
@@ -69,45 +90,70 @@ con.connect(err => {
     next();
   });
 
+  //set up session management
+  app.use(session({
+    cookieName: 'session',
+    secret: 'wl36969;0)kejfl-sdfsdf1?s55df-{{}D++sdf;l',
+    duation: 20 * 60 * 1000,
+    activeDuration: 10 * 60 * 1000,
+    httpOnly: true,
+    secure: true,
+    ephemeral: true
+  }));
+
+  app.use((req, res, next) => {
+    if (req.session && req.session.user) {
+      let user = req.users.find(user => user.username === req.session.user.username);
+      if (user) {
+        req.user = user;
+        delete req.user.password;
+        req.session.user = user;
+        res.locals.user = user;
+      }
+    }
+    next();
+  });
+
+  function requireLogin(req, res, next) {
+    if (!req.user) {
+      res.redirect('/login');
+    } else {
+      next();
+    }
+  }
+
 
   app.use(express.static(path.join(__dirname, 'public')));
-
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
 
-  let adminVerified = false;
-
   ///////////////////////////////
-
   app.get('/', (req, res) => {
     res.render('pages/index', { teams: req.teams });
   });
 
   app.get('/login', (req, res) => {
-    adminVerified ? res.redirect('/') : res.render('pages/login', { error: false });
+    res.render('pages/login', { error: false });
   });
 
   app.post('/login', (req, res) => {
-    //adminVerified is declared and defined as false above, outside of any get call.
-    if (req.body.username && req.body.password) {
-      req.users.forEach(user => {
-        if (user.username === req.body.username && user.password === req.body.password) {
-          adminVerified = true;
-        }
-      });
+    let user;
+    for (let i = 0; i < req.users.length; i++) {
+      if (req.users[i].username === req.body.username && req.users[i].password === req.body.password) {
+        user = req.users[i];
+        break;
+      }
+    }
 
-      //set a timeout for 10 minutes, after which the user will no longer be logged in.
-      setTimeout(() => {
-        adminVerified = false;
-      }, 600000);
-
-      adminVerified ? res.redirect('/admin') : res.render('pages/login', { error: true });
+    if (!user) {
+      res.render('pages/login', { error: true });
     } else {
-      res.render('pages/login', { error: false });
+      req.session.user = user;
+      res.redirect('/admin');
     }
   });
 
-  app.get('/admin', (req, res) => {
+  app.get('/admin', requireLogin, (req, res) => {
     res.render('pages/admin', { rooms: req.rooms, teams: req.teams })
   })
 
@@ -135,7 +181,7 @@ con.connect(err => {
     }
   });
 
-  app.get('/teamEdit', (req, res) => {
+  app.get('/teamEdit', requireLogin, (req, res) => {
     let team = req.teams.find(team => team.id == req.query.id);
     res.render('pages/teamEdit', { team: team });
   });
@@ -147,7 +193,7 @@ con.connect(err => {
     });
   });
 
-  app.get('/roomEdit', (req, res) => {
+  app.get('/roomEdit', requireLogin, (req, res) => {
     let room = req.rooms.find(room => room.id == req.query.id);
     res.render('pages/roomEdit', { room: room, teams: req.teams });
   });
@@ -165,7 +211,7 @@ con.connect(err => {
     }
   });
 
-  app.get('/roomAdd', (req, res) => {
+  app.get('/roomAdd', requireLogin, (req, res) => {
     res.render('pages/roomAdd', { teams: req.teams });
   });
 
@@ -191,7 +237,7 @@ con.connect(err => {
     }
   });
 
-  app.get('/roomDelete', (req, res) => {
+  app.get('/roomDelete', requireLogin, (req, res) => {
     res.render('pages/roomDelete', { rooms: req.rooms, teams: req.teams });
   });
 
@@ -202,7 +248,7 @@ con.connect(err => {
     });
   });
 
-  app.get('/teamDelete', (req, res) => {
+  app.get('/teamDelete', requireLogin, (req, res) => {
     res.render('pages/teamDelete', { rooms: req.rooms, teams: req.teams });
   });
 
