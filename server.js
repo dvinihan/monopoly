@@ -4,9 +4,32 @@ const PORT = process.env.PORT || 5000;
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const session = require('client-sessions');
+const mongodb = require('mongodb');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
+
+//set up MongoDB connection
+let uri = 'mongodb://heroku_bwvq81lz:jkkpltt61ik7t9afilv2urcle9@ds123981.mlab.com:23981/heroku_bwvq81lz';
+
+mongodb.MongoClient.connect(uri, { useNewUrlParser: true }, function (err, client) {
+  if (err) throw err;
+  const db = client.db('heroku_bwvq81lz');
+
+
+  let rooms = db.collection('rooms');
+  let teams = db.collection('teams');
+  let users = db.collection('users');
+
+  users.find({}).toArray(function (err, docs) {
+    console.log(docs);
+  });
+
+
+  client.close(function (err) {
+    if (err) throw err;
+  });
+});
 
 //create connection to mysql db
 try {
