@@ -3,12 +3,12 @@ const path = require('path');
 const PORT = process.env.PORT || 5000;
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
-const session = require('client-sessions');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 
-//create connection to mysql db
+
+/////////////    CREATE MYSQL CONNECTION     /////////////////
 try {
   var con = mysql.createConnection({
     host: 'qzkp8ry756433yd4.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
@@ -17,11 +17,10 @@ try {
     database: 'ojb6fb1yyvuaj3a8'
   });
 } catch (err) {
-  console.log(err);
   throw (err);
 }
-///////////////////////////////
 
+//////////  HELPER FUNCTIONS    ////////////////////
 function sortArray(array) {
   let newArray = [];
   array.forEach(item => {
@@ -36,7 +35,7 @@ function sortArray(array) {
   return newArray;
 }
 
-//connect to mysql db
+/////////   ENTER DATABASE CONNECTION  /////////
 con.connect(err => {
   if (err) throw err;
   console.log('Connected!');
@@ -70,7 +69,8 @@ con.connect(err => {
     });
   });
 
-  //Apostrophe check
+
+  //Apostrophe check Middleware
   app.use((req, res, next) => {
     for (const key in req.body) {
       let value = req.body[key];
@@ -90,44 +90,13 @@ con.connect(err => {
     next();
   });
 
-  //set up session management
-  app.use(session({
-    cookieName: 'session',
-    secret: 'wl36969;0)kejfl-sdfsdf1?s55df-{{}D++sdf;l',
-    duation: 20 * 60 * 1000,
-    activeDuration: 10 * 60 * 1000,
-    httpOnly: true,
-    secure: true,
-    ephemeral: true
-  }));
-
-  app.use((req, res, next) => {
-    if (req.session && req.session.user) {
-      let user = req.users.find(user => user.username === req.session.user.username);
-      if (user) {
-        req.user = user;
-        delete req.user.password;
-        req.session.user = user;
-        res.locals.user = user;
-      }
-    }
-    next();
-  });
-
-  function requireLogin(req, res, next) {
-    if (!req.user) {
-      res.redirect('/login');
-    } else {
-      next();
-    }
-  }
-
 
   app.use(express.static(path.join(__dirname, 'public')));
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
 
-  ///////////////////////////////
+  /////////////   ROUTES    //////////////////////
+
   app.get('/', (req, res) => {
     res.render('pages/index', { teams: req.teams });
   });
@@ -137,23 +106,10 @@ con.connect(err => {
   });
 
   app.post('/login', (req, res) => {
-    let user;
-    for (let i = 0; i < req.users.length; i++) {
-      if (req.users[i].username === req.body.username && req.users[i].password === req.body.password) {
-        user = req.users[i];
-        break;
-      }
-    }
-
-    if (!user) {
-      res.render('pages/login', { error: true });
-    } else {
-      req.session.user = user;
-      res.redirect('/admin');
-    }
+    res.redirect('/admin');
   });
 
-  app.get('/admin', requireLogin, (req, res) => {
+  app.get('/admin', (req, res) => {
     res.render('pages/admin', { rooms: req.rooms, teams: req.teams })
   })
 
@@ -181,7 +137,7 @@ con.connect(err => {
     }
   });
 
-  app.get('/teamEdit', requireLogin, (req, res) => {
+  app.get('/teamEdit', (req, res) => {
     let team = req.teams.find(team => team.id == req.query.id);
     res.render('pages/teamEdit', { team: team });
   });
@@ -193,7 +149,7 @@ con.connect(err => {
     });
   });
 
-  app.get('/roomEdit', requireLogin, (req, res) => {
+  app.get('/roomEdit', (req, res) => {
     let room = req.rooms.find(room => room.id == req.query.id);
     res.render('pages/roomEdit', { room: room, teams: req.teams });
   });
@@ -211,7 +167,7 @@ con.connect(err => {
     }
   });
 
-  app.get('/roomAdd', requireLogin, (req, res) => {
+  app.get('/roomAdd', (req, res) => {
     res.render('pages/roomAdd', { teams: req.teams });
   });
 
@@ -237,7 +193,7 @@ con.connect(err => {
     }
   });
 
-  app.get('/roomDelete', requireLogin, (req, res) => {
+  app.get('/roomDelete', (req, res) => {
     res.render('pages/roomDelete', { rooms: req.rooms, teams: req.teams });
   });
 
@@ -248,7 +204,7 @@ con.connect(err => {
     });
   });
 
-  app.get('/teamDelete', requireLogin, (req, res) => {
+  app.get('/teamDelete', (req, res) => {
     res.render('pages/teamDelete', { rooms: req.rooms, teams: req.teams });
   });
 
@@ -261,7 +217,7 @@ con.connect(err => {
     });
   });
 
-  ///////////////////////////////
+  /////////////////////////////////////////////////////////////
 
   app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 });
