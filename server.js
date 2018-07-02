@@ -3,9 +3,33 @@ const path = require('path');
 const PORT = process.env.PORT || 5000;
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
+const passport = require('passport');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const { Strategy } = require('passport-local');
 
 const app = express();
+
+//require('./config/passport.js')(app);
+
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(session({ secret: 'acelwij4l;#$@%^*af$%^sd' }));
+
+//////////  PASSPORT //////////////
+//PASSPORT.JS//
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Stores user in session
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+// Retreieves user from session
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
 
 
 /////////////    CREATE MYSQL CONNECTION     /////////////////
@@ -106,6 +130,29 @@ con.connect(err => {
   });
 
   app.post('/login', (req, res) => {
+    passport.authenticate('local', {
+      successRedirect: '/admin',
+      failureRedirect: '/login'
+    });
+
+    //LOCAL.STRATEGY.JS//
+    passport.use(new Strategy(
+      {
+        usernameField: 'username',
+        passwordField: 'password'
+      }, (username, password, done) => {
+        const user = req.users.find(user => {
+          user.username === username;
+        });
+        if (user.password === req.query.password) {
+          done(null, user);
+        } else {
+          done(null, false);
+        }
+      }
+    ));
+
+    /*
     let user = req.users.find(user => {
       return user.username === req.body.username;
     });
@@ -115,6 +162,7 @@ con.connect(err => {
     else {
       res.render('pages/login', { error: true });
     }
+    */
   });
 
   app.get('/admin', (req, res) => {
