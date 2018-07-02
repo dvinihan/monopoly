@@ -62,7 +62,7 @@ con.connect(err => {
 
           req.rooms = rooms;
           req.teams = teams;
-          req.users = users
+          req.users = users;
           next();
         });
       });
@@ -106,7 +106,15 @@ con.connect(err => {
   });
 
   app.post('/login', (req, res) => {
-    res.redirect('/admin');
+    let user = req.users.find(user => {
+      return user.username === req.body.username;
+    });
+    if (user && user.password === req.body.password) {
+      res.redirect('/admin');
+    }
+    else {
+      res.render('pages/login', { error: true });
+    }
   });
 
   app.get('/admin', (req, res) => {
