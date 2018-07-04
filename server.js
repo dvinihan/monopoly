@@ -23,15 +23,25 @@ try {
 //////////  HELPER FUNCTIONS    ////////////////////
 function sortArray(array) {
   let newArray = [];
+  let none = false;
+  let noneItem;
+
   array.forEach(item => {
-    for (let i = 0; i < newArray.length; i++) {
-      if (item.name.toLowerCase() < newArray[i].name.toLowerCase()) {
-        newArray.splice(i, 0, item);
-        return;
+    if (item.name === "--None--") {
+      none = true;
+      noneItem = item;
+    } else {
+      for (let i = 0; i < newArray.length; i++) {
+        if (item.name.toLowerCase() < newArray[i].name.toLowerCase()) {
+          newArray.splice(i, 0, item);
+          return;
+        }
       }
+      newArray.push(item);
     }
-    newArray.push(item);
   });
+
+  if (none) { newArray.unshift(noneItem); }
   return newArray;
 }
 
@@ -72,12 +82,19 @@ con.connect(err => {
 
   //Apostrophe check Middleware
   app.use((req, res, next) => {
-    /*
-    for (const key in req.body) {
-      let value = req.body[key];
-      if (value.trim() === "") {
-        res.render('pages/error', { rooms: req.rooms, teams: req.teams });
-      } else {
+    if (req.body && req.body.name !== undefined) {
+      if (req.body.name.trim() === "") {
+        res.render('pages/error', { error: "Name cannot be blank." });
+        return;
+      }
+
+      // Check for double quotes
+      if (req.body.name.includes("\"")) {
+        res.render('pages/error', { error: "Names cannot contain a double quote." });
+        return;
+      }
+      else {
+        let value = req.body.name;
         let newString = '';
 
         for (let i = 0; i < value.length; i++) {
@@ -85,10 +102,9 @@ con.connect(err => {
             newString += "''";
           } else newString += value[i];
         }
-        req.body[key] = newString;
+        req.body.name = newString;
       }
-    };
-    */
+    }
     next();
   });
 
@@ -126,7 +142,7 @@ con.connect(err => {
       //check if the name is already taken
       let exists = false;
       for (let i = 0; i < req.teams.length; i++) {
-        if (req.teams[i].name === req.body.teamName) {
+        if (req.teams[i].name === req.body.name) {
           exists = true;
         }
       }
@@ -134,7 +150,7 @@ con.connect(err => {
       if (exists) {
         res.render('pages/signup', { error: true });
       } else {
-        con.query(`INSERT INTO teams (name) VALUES ('${req.body.teamName}')`, (err) => {
+        con.query(`INSERT INTO teams (name) VALUES ('${req.body.name}')`, (err) => {
           if (err) throw err;
           res.redirect('/');
         });
@@ -156,40 +172,19 @@ con.connect(err => {
       res.render('pages/roomEdit', { room: room, teams: req.teams });
     })
     .post('/roomEdit', (req, res) => {
-      if (!req.body.name) {
-        res.render('pages/error', { rooms: req.rooms, teams: req.teams });
-      } else {
-        let teamId = req.teams.find(team => team.name === req.body.teamName).id;
-
-        con.query(`UPDATE rooms SET name = '${req.body.name}', time = '${req.body.time}', teamId = '${teamId}' WHERE id = '${req.body.id}'`, (err) => {
-          if (err) throw err;
-          res.redirect('/admin');
-        });
-      }
+      con.query(`UPDATE rooms SET name = '${req.body.name}', time = '${req.body.time}', teamId = '${req.body.teamId}' WHERE id = '${req.body.id}'`, (err) => {
+        if (err) throw err;
+        res.redirect('/admin');
+      });
     })
     .get('/roomAdd', (req, res) => {
       res.render('pages/roomAdd', { teams: req.teams });
     })
     .post('/roomAdd', (req, res) => {
-      if (!req.body.name) {
-        res.render('pages/error', { rooms: req.rooms, teams: req.teams });
-      } else {
-        let exists = false;
-        for (let i = 0; i < req.rooms.length; i++) {
-          if (req.rooms[i].name === req.body.name) {
-            exists = true;
-          }
-        }
-
-        if (exists) {
-          res.render('pages/error', { rooms: req.rooms, teams: req.teams });
-        } else {
-          con.query(`INSERT INTO rooms (name, time, teamId) VALUES('${req.body.name}', '${req.body.time}', '${req.body.teamId}')`, (err) => {
-            if (err) throw err;
-            res.redirect('/admin');
-          });
-        }
-      }
+      con.query(`INSERT INTO rooms (name, time, teamId) VALUES('${req.body.name}', '${req.body.time}', '${req.body.teamId}')`, (err) => {
+        if (err) throw err;
+        res.redirect('/admin');
+      });
     })
     .get('/roomDelete', (req, res) => {
       res.render('pages/roomDelete', { rooms: req.rooms, teams: req.teams });

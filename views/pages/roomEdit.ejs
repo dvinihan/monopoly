@@ -19,15 +19,15 @@
       <input value='<%- room.time %>' name="time" />
       <br />Held by:
 
-      <select name="teamName">
+      <select name="teamId">
         <% var teamName = teams.find(team => team.id === room.teamId).name %>
           <% teams.forEach(function(t) { %>
             <% if (teamName !== t.name) {%>
-              <option value="<%- t.name %>">
+              <option value="<%- t.id %>">
                 <%= t.name %>
               </option>
               <% } else { %>
-                <option value="<%- t.name %>" selected>
+                <option value="<%- t.id %>" selected>
                   <%= t.name %>
                 </option>
                 <% }}); %>

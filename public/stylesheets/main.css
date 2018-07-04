@@ -117,3 +117,8 @@ th, td {
 .do-not-show {
   display: none;
 }
+
+/* ERROR STYLING */
+.hit-back-button {
+  text-align: center;
+}
