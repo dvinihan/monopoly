@@ -21,7 +21,7 @@ try {
 }
 
 //////////  HELPER FUNCTIONS    ////////////////////
-function sortArray(array) {
+function sortArray(array, sortBy) {
   let newArray = [];
   let none = false;
   let noneItem;
@@ -32,7 +32,10 @@ function sortArray(array) {
       noneItem = item;
     } else {
       for (let i = 0; i < newArray.length; i++) {
-        if (item.name.toLowerCase() < newArray[i].name.toLowerCase()) {
+        if (sortBy === 'name' && item.name.toLowerCase() < newArray[i].name.toLowerCase()) {
+          newArray.splice(i, 0, item);
+          return;
+        } else if (item.score > newArray[i].score) {
           newArray.splice(i, 0, item);
           return;
         }
@@ -57,14 +60,14 @@ con.connect(err => {
       let rooms = result;
 
       //sort rooms alphabetically
-      rooms = sortArray(rooms);
+      rooms = sortArray(rooms, "name");
 
       con.query('SELECT * FROM teams', (err, result) => {
         if (err) throw err;
         let teams = result;
 
         //sort teams alphabetically
-        teams = sortArray(teams);
+        teams = sortArray(teams, "name");
 
         con.query('SELECT * FROM users', (err, result) => {
           if (err) throw err;
@@ -116,7 +119,9 @@ con.connect(err => {
   /////////////   ROUTES    //////////////////////
 
   app.get('/', (req, res) => {
-    res.render('pages/index', { teams: req.teams });
+    // Sort teams by score
+    let teams = sortArray(req.teams, 'score');
+    res.render('pages/index', { teams: teams });
   })
     .get('/login', (req, res) => {
       res.render('pages/login', { error: false });
@@ -154,7 +159,6 @@ con.connect(err => {
           if (err) throw err;
           res.redirect('/');
         });
-
       }
     })
     .get('/teamEdit', (req, res) => {
