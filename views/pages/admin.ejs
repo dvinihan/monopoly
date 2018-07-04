@@ -42,7 +42,7 @@
                     Current record:
                     <%= r.time %>
                       <br /> Held by:
-                      <% if(r.teamId !== null) { %>
+                      <% if(r.teamId !== 0) { %>
                         <%= teams.find(team => team.id === r.teamId).name %>
                           <% } %>
                   </div>
