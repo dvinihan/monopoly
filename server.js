@@ -121,7 +121,8 @@ con.connect(err => {
   app.get('/', (req, res) => {
     // Sort teams by score
     let teams = sortArray(req.teams, 'score');
-    res.render('pages/index', { teams: teams });
+
+    res.render('pages/index', { rooms: req.rooms, teams: teams });
   })
     .get('/login', (req, res) => {
       res.render('pages/login', { error: false });

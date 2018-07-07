@@ -52,23 +52,49 @@
 .table-row:nth-of-type(odd){
   background-color: rgb(212, 193, 193);
 }
+.rooms-table-row:nth-of-type(odd) {
+  background-color: rgb(135, 175, 159);
+}
 
-.table-score, .header-score {
+.table-score, .header-score, .header-room-holder, .table-room-holder {
   text-align: right;
 }
 th, td {
   padding: 8px;
 }
+.home-table-title{
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.second-home-table {
+  margin: 40px 0;
+}
 
 
+
+
+/* editing routes */
 .team-edit, .room-edit {
   margin: 30px;
 }
-
 .error-message {
   color: red;
   text-align: center;
 }
+.team-input, .score-input {
+  min-width: 200px;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
 
 /* admin.ejs styling */
 .roomContainer {

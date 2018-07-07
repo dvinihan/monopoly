@@ -3,19 +3,26 @@
 
 <head>
 	<% include ../partials/header.ejs %>
+		<meta http-equiv="refresh" content="30">
 </head>
 
 <body>
 	<% include ../partials/homeTop.ejs %>
 
+		<div class="home-table-title">Scoreboard:</div>
+
 		<table class="home-table-container">
 			<tr class="table-header-row">
+				<th class="header-place">Place</th>
 				<th class="header-name">Team Name</th>
 				<th class="header-score">Score</th>
 			</tr>
 			<% teams.forEach(function(t) { %>
 				<% if(t.id !== 0) { %>
 					<tr class="table-row">
+						<td class="table-place">
+							<%= teams.indexOf(t) %>
+						</td>
 						<td class="table-name">
 							<%= t.name %>
 						</td>
@@ -26,6 +33,28 @@
 					<% } %>
 						<% }); %>
 		</table>
+
+		<div class="second-home-table">
+			<div class="home-table-title">Rooms:</div>
+
+			<table class="home-table-container">
+				<tr class="table-header-row">
+					<th class="header-name">Room Name</th>
+					<th class="header-room-holder">Room Holder</th>
+				</tr>
+				<% rooms.forEach(function(r) { %>
+					<tr class="rooms-table-row">
+						<td class="table-name">
+							<%= r.name %>
+						</td>
+						<td class="table-room-holder">
+							<% let thisTeam = teams.find(team => team.id == r.teamId); %>
+								<%= thisTeam.name %>
+						</td>
+					</tr>
+					<% }); %>
+			</table>
+		</div>
 
 </body>
 
