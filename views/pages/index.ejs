@@ -40,12 +40,16 @@
 			<table class="home-table-container">
 				<tr class="table-header-row">
 					<th class="header-name">Room Name</th>
+					<th class="header-current-record">Current Record</th>
 					<th class="header-room-holder">Room Holder</th>
 				</tr>
 				<% rooms.forEach(function(r) { %>
 					<tr class="rooms-table-row">
 						<td class="table-name">
 							<%= r.name %>
+						</td>
+						<td class="table-current-record">
+							<%= r.time %>
 						</td>
 						<td class="table-room-holder">
 							<% let thisTeam = teams.find(team => team.id == r.teamId); %>
